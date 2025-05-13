@@ -17,7 +17,7 @@ import { getUserByEmail } from "../db/auth.db";
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
   .schema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
-    const result = await auth.api.signInEmail({
+    const response = await auth.api.signInEmail({
       body: {
         email,
         password,
@@ -26,19 +26,7 @@ export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
       headers: await headers(),
     });
 
-    if (result.status === 401) {
-      throw new ActionError(errors.AUTH.INVALID_CREDENTIALS);
-    }
-
-    if (result.status === 403) {
-      throw new ActionError(errors.AUTH.EMAIL_NOT_VERIFIED);
-    }
-
-    if (result.status === 404) {
-      return { success: true };
-    }
-
-    if (!result.ok) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS);
+    if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
 
     return { success: true };
   });
@@ -47,7 +35,7 @@ export const googleLoginAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
 ).action(async () => {
-  const result = await auth.api.signInSocial({
+  const response = await auth.api.signInSocial({
     body: {
       provider: "google",
     },
@@ -55,10 +43,10 @@ export const googleLoginAction = publicActionWithLimiter(
     headers: await headers(),
   });
 
-  if (!result.ok) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS);
+  if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
 
-  const json = await result.json();
-  if (!json.url) throw new ActionError(errors.AUTH.INVALID_CREDENTIALS);
+  const json = await response.json();
+  if (!json.url) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
 
   return redirect(json.url);
 });
@@ -69,14 +57,17 @@ export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
     const existingUser = await getUserByEmail(email);
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE);
 
-    await auth.api.signUpEmail({
+    const response = await auth.api.signUpEmail({
       body: {
         name,
         email,
         password,
       },
+      asResponse: true,
       headers: await headers(),
     });
+
+    if (!response.ok) throw new ActionError(errors.AUTH.REGISTRATION_FAILED);
 
     return { success: true, message: "Registration successful!" };
   });
@@ -87,7 +78,7 @@ export const forgotPasswordAction = publicActionWithLimiter(
 )
   .schema(forgotPasswordSchema)
   .action(async ({ parsedInput: { email } }) => {
-    const result = await auth.api.forgetPassword({
+    const response = await auth.api.forgetPassword({
       body: {
         email,
         redirectTo: "/auth/forgot-password",
@@ -96,8 +87,8 @@ export const forgotPasswordAction = publicActionWithLimiter(
       headers: await headers(),
     });
 
-    if (result.status === 404) return { success: true };
-    if (!result.ok) throw new ActionError(errors.AUTH.FORGOT_PASSWORD_FAILED);
+    if (response.status === 404) return { success: true };
+    if (!response.ok) throw new ActionError(errors.AUTH.FORGOT_PASSWORD_FAILED);
 
     return { success: true };
   });
@@ -108,7 +99,7 @@ export const resetPasswordAction = publicActionWithLimiter(
 )
   .schema(resetPasswordWithTokenSchema)
   .action(async ({ parsedInput: { password, token } }) => {
-    const result = await auth.api.resetPassword({
+    const response = await auth.api.resetPassword({
       body: {
         newPassword: password,
         token,
@@ -117,11 +108,11 @@ export const resetPasswordAction = publicActionWithLimiter(
       headers: await headers(),
     });
 
-    if (result.status === 400) {
+    if (response.status === 400) {
       throw new ActionError(errors.AUTH.INVALID_RESET_TOKEN);
     }
 
-    if (!result.ok) {
+    if (!response.ok) {
       throw new ActionError(errors.AUTH.RESET_PASSWORD_FAILED);
     }
 

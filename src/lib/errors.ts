@@ -1,11 +1,9 @@
 export const errors = {
   AUTH: {
     UNAUTHORIZED: "Unauthorized. Please log in to continue.",
-    INVALID_CREDENTIALS: "Invalid email or password.",
-    EMAIL_NOT_VERIFIED:
-      "Email not verified. Please check your email for verification.",
     EMAIL_IN_USE: "Email already in use.",
-    USER_NOT_FOUND: "User not found.",
+    AUTHENTICATION_FAILED: "Authentication failed. Please try again.",
+    REGISTRATION_FAILED: "Registration failed. Please try again.",
     FORGOT_PASSWORD_FAILED:
       "Failed to send password reset email. Please try again.",
     RESET_PASSWORD_FAILED: "Failed to reset password. Please try again.",
