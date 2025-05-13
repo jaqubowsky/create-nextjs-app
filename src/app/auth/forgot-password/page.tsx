@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-form";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function ForgotPasswordPage() {
   return (
@@ -21,7 +22,9 @@ export default function ForgotPasswordPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <ForgotPasswordForm />
+          <Suspense fallback={<></>}>
+            <ForgotPasswordForm />
+          </Suspense>
 
           <div className="text-center text-sm">
             Remember your password?{" "}
