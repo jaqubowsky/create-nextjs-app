@@ -1,0 +1,72 @@
+---
+description: Guides AI on project structure, developing or refactoring functionalities according to the established feature-based architecture, Next.js patterns, and ESLint boundaries.
+globs: 
+alwaysApply: false
+---
+# AI Rules for {{project-name}}
+
+---
+description: Guides AI on project structure and developing new functionalities according to the established feature-based architecture, Next.js patterns, and ESLint boundaries.
+alwaysApply: false
+type: "agent_requested"
+---
+
+## Project Structure Overview
+
+The project follows a feature-based architecture located within the `src` directory:
+
+-   **`/src/app`**: Contains Next.js pages, layouts, and route handlers. This is where user-facing parts of features are exposed.
+-   **`/src/components`**:
+    -   **`/src/components/ui`**: For ShadCN UI components and other general-purpose, reusable UI primitives. These are styled with TailwindCSS and utilize `cn` from `@/lib/utils`.
+    -   **`/src/components/` (root)**: For other shared, application-specific React components that might be used across multiple features but are not necessarily low-level UI primitives.
+-   **`/src/features`**: Core of the feature-based architecture. Each subdirectory (e.g., `src/features/auth/`, `src/features/user-profile/`) encapsulates a distinct feature of the application.
+    -   A typical feature directory `src/features/[featureName]/` may contain:
+        -   `components/`: React components specific to this feature.
+        -   `actions.ts`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic.
+        -   `schemas.ts`: Zod schemas for data validation (e.g., for forms, API inputs/outputs) related to this feature.
+        -   Other TypeScript modules for feature-specific logic, types, or hooks.
+-   **`/src/lib`**: Utility functions, shared libraries, helper functions (e.g., `cn` in `src/lib/utils.ts`), and configurations.
+-   **`/src/drizzle`**: Contains Drizzle ORM schema definitions (e.g., `schema.ts`), migration files, and database client setup.
+-   **`/src/hooks`**: Custom React hooks that can be shared across features or within `app`.
+-   **`/src/server`**: Server-side specific utilities or configurations not fitting into `actions.ts` within features (use with caution, prefer feature-specific actions).
+
+## Developing New Functionalities
+
+When asked to implement a new feature (e.g., "User Dashboard"):
+
+1.  **Primary Location**:
+    *   Create a new directory for the feature: `src/features/user-dashboard/`.
+    *   Place feature-specific React components in `src/features/user-dashboard/components/`.
+    *   Implement backend logic using Next.js Server Actions in `src/features/user-dashboard/actions/` (using `next-safe-action`).
+    *   Define Zod validation schemas in `src/features/user-dashboard/schemas/`. Use these for form validation (with `react-hook-form` and `@next-safe-action/adapter-react-hook-form`) and server action input validation.
+
+2.  **Database Changes (Drizzle ORM)**:
+    *   If the feature requires new tables or modifications to existing ones, update the schema definitions in `src/drizzle/schema.ts`.
+    *   Remind the user to generate migrations: `npx drizzle-kit generate`.
+    *   Remind the user to apply migrations: `npx drizzle-kit migrate`.
+
+3.  **Shared Components & Utilities**:
+    *   If a new UI component is generic and reusable across multiple features:
+        *   Place it in `src/components/ui/` if it's a ShadCN-style primitive or follows that pattern.
+        *   Place it in `src/components/` (root) if it's a more complex shared component.
+    *   If new utility functions are developed that could be useful across the application, place them in `src/lib/`.
+
+4.  **Routes & Pages (Next.js App Router)**:
+    *   Create new pages, layouts, or route handlers for the feature within `src/app/`. For example, a user dashboard page might be `src/app/dashboard/page.tsx`.
+    *   These app router components will typically import and use components from `src/features/user-dashboard/components/` and `src/components/`.
+
+5.  **ESLint Module Boundaries**:
+    *   **Crucially, all new code must adhere to the module boundary rules defined in `eslint.config.mjs`.**
+        *   `shared` (e.g., `src/components/`, `src/lib/`, `src/drizzle/`) can only import from other `shared` modules.
+        *   `feature` (e.g., `src/features/user-dashboard/`) can import from `shared` and from within the *same* feature (`src/features/user-dashboard/`).
+        *   `app` (e.g., `src/app/dashboard/`) can import from `shared` and `feature` modules.
+    *   The AI should verify its suggestions against these rules.
+
+7.  **Tech Stack Reminder**:
+    *   **Frontend**: Next.js 15.3 (App Router), React 19, TailwindCSS 4, ShadCN UI.
+    *   **Backend**: Next.js API Routes/Server Actions (prefer Server Actions with `next-safe-action`).
+    *   **Database**: PostgreSQL with Drizzle ORM.
+    *   **Form Handling**: React Hook Form with Zod validation and `next-safe-action` hook form adapter.
+    *   **Authentication**: Better Auth.
+
+By following this structure, new functionalities will be modular, maintainable, and consistent with the project's architecture.

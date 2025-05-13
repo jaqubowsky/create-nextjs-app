@@ -15,9 +15,6 @@
 /prisma/dev.db-journal
 /prisma/migrations
 
-#cursor
-.cursor/rules
-
 # testing
 /coverage
 
