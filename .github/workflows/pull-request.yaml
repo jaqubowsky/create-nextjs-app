@@ -7,14 +7,22 @@ on:
 jobs:
   pr-check:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - if: ${{ github.actor == 'dependabot[bot]' }}
+        name: Fetch Git History
+        run: git fetch --prune --unshallow
+
       - name: Setup Project
         uses: ./.github/actions/setup-project
 
-      - name: Check Outdated Dependencies
+      - if: ${{ github.actor != 'dependabot[bot]' }}
+        name: Check Outdated Dependencies
         uses: ./.github/actions/deps-outdated
 
       - name: Check Critical Dependencies
@@ -22,3 +30,9 @@ jobs:
 
       - name: Verify Project
         uses: ./.github/actions/verify-project
+
+      - if: ${{ github.actor == 'dependabot[bot]' && success() }}
+        name: Auto-approve minor/patch dependency updates
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
