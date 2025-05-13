@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Create NextJS App
+
+A template for scaffolding NextJS App
+
+## Tech Stack
+
+- **Frontend**: Next.js 15.3, React 19, TailwindCSS 4, ShadCN UI
+- **Backend**: Next.js API Routes, Server Actions with Next Safe Action
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Better Auth
+- **Form Handling**: React Hook Form with Zod validation and Next Safe Action Hook Form adapter
+- **Rate Limiting**: Client Memory
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 22+ and npm
+- PostgreSQL database
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/jaqubowsky/create-nextjs-app.git
+   cd your-repo-name
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up environment variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - Copy `.env.example` to `.env` (if not already present)
+   - Update the `DATABASE_URL` with your PostgreSQL connection string
+   - Configure authentication variables:
+     - `BETTER_AUTH_SECRET`: A secure random string
+     - `BETTER_AUTH_URL`: Your application URL (e.g., `http://localhost:3000` for development)
+     - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Google authentication
+   - Set up email configuration:
+     - `EMAIL_SERVER_HOST`
+     - `EMAIL_SERVER_PORT`
+     - `EMAIL_SERVER_USER`
+     - `EMAIL_SERVER_PASSWORD`
+     - `EMAIL_FROM`
 
-## Deploy on Vercel
+4. Generate database migrations:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npx drizzle-kit generate
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Apply database migrations:
+
+   ```bash
+   npx drizzle-kit migrate
+   ```
+
+6. Start the development server with Turbopack:
+
+   ```bash
+   npm run dev
+   ```
+
+7. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+The project follows a feature-based architecture:
+
+- `/src/app` - Next.js pages and layouts
+- `/src/components` - Shared UI components
+- `/src/features` - Feature modules with related components, schemas, and server actions
+- `/src/lib` - Utility functions and shared libraries
+- `/src/drizzle` - Database schema and migrations
+
+## ESLint Configuration
+
+The project uses ESLint with boundaries plugin to enforce architectural boundaries:
+
+- Shared components and utilities can only import from other shared modules
+- Feature modules can import from shared modules or within the same feature
+- App pages can import from shared modules or feature modules
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [React](https://react.dev/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [ShadCN UI](https://ui.shadcn.com/)
+- [Better Auth](https://better-auth.dev/)
