@@ -6,6 +6,11 @@ export const errors = {
       "Email not verified. Please check your email for verification.",
     EMAIL_IN_USE: "Email already in use.",
     USER_NOT_FOUND: "User not found.",
+    FORGOT_PASSWORD_FAILED:
+      "Failed to send password reset email. Please try again.",
+    RESET_PASSWORD_FAILED: "Failed to reset password. Please try again.",
+    INVALID_RESET_TOKEN:
+      "Invalid or expired reset token. Please request a new password reset link.",
   },
   GENERAL: {
     SERVER_ERROR: "An unexpected error occurred. Please try again later.",

@@ -26,7 +26,7 @@ export function LoginForm() {
     {
       actionProps: {
         onSuccess: async () => {
-          router.push("/dashboard");
+          router.push("/");
           router.refresh();
         },
         onError: (err) => {

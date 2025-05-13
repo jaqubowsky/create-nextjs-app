@@ -21,9 +21,25 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await transporter.sendMail({
+        from: env.EMAIL_FROM,
+        to: user.email,
+        subject: "Reset your password",
+        text: `Click the link to reset your password: ${url}`,
+      });
+    },
     password: {
       hash: hashPassword,
       verify: verifyPassword,
+    },
+  },
+  socialProviders: {
+    google: {
+      enabled: true,
+      prompt: "select_account",
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
   emailVerification: {
