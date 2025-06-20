@@ -3,9 +3,11 @@ import * as schema from "@/drizzle/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { sendResetPasswordEmail, sendVerifyEmailEmail } from "./email-service";
 import { env } from "./env";
 import { hashPassword, verifyPassword } from "./hash";
-import { sendMail } from "./mailer";
+
+const ONE_HOUR = 3600;
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,12 +24,13 @@ export const auth = betterAuth({
     autoSignIn: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      sendMail({
-        from: env.EMAIL_FROM,
-        to: user.email,
-        subject: "Reset your password",
-        text: `Click the link to reset your password: ${url}`,
-      });
+      await sendResetPasswordEmail(
+        {
+          name: user.name,
+          email: user.email,
+        },
+        url
+      );
     },
     password: {
       hash: hashPassword,
@@ -46,14 +49,15 @@ export const auth = betterAuth({
     enabled: true,
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    expiresIn: 3600, // 1 hour
+    expiresIn: ONE_HOUR,
     sendVerificationEmail: async ({ user, url }) => {
-      sendMail({
-        from: env.EMAIL_FROM,
-        to: user.email,
-        subject: "Verify your email address",
-        text: `Click the link to verify your email: ${url}`,
-      });
+      await sendVerifyEmailEmail(
+        {
+          name: user.name,
+          email: user.email,
+        },
+        url
+      );
     },
   },
   plugins: [nextCookies()],

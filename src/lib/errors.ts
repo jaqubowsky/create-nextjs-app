@@ -10,6 +10,9 @@ export const errors = {
     INVALID_RESET_TOKEN:
       "Invalid or expired reset token. Please request a new password reset link.",
   },
+  STRIPE: {
+    CUSTOMER_NOT_FOUND: "Customer not found.",
+  },
   GENERAL: {
     SERVER_ERROR: "An unexpected error occurred. Please try again later.",
     RATE_LIMIT: "Too many requests. Please try again later.",

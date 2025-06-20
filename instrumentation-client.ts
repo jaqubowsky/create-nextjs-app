@@ -1,9 +1,9 @@
 // This file configures the initialization of Sentry on the client.
-// The config you add here will be used whenever a users loads a page in their browser.
+// The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import { env } from "@/lib/env";
 import * as Sentry from "@sentry/nextjs";
+import { env } from "./src/lib/env";
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
@@ -11,12 +11,8 @@ Sentry.init({
   // Add optional integrations for additional features
   integrations: [Sentry.replayIntegration()],
 
-  enabled: env.NODE_ENV === "production",
-
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
-
-  environment: env.NODE_ENV,
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while
@@ -25,6 +21,9 @@ Sentry.init({
 
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
+
+  enabled: env.NODE_ENV === "production",
+  environment: env.NODE_ENV,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: env.NODE_ENV === "development",

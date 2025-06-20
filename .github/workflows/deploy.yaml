@@ -48,9 +48,3 @@ jobs:
           tags: |
             jaqubowsky/xxx:latest
           platforms: linux/amd64
-          build-args: |
-            NEXT_PUBLIC_BETTER_AUTH_URL=${{ secrets.NEXT_PUBLIC_BETTER_AUTH_URL }}
-            NEXT_PUBLIC_NODE_ENV=${{ secrets.NEXT_PUBLIC_NODE_ENV }}
-            NEXT_PUBLIC_SENTRY_DSN=${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-            NEXT_PUBLIC_SENTRY_ORG=${{ secrets.NEXT_PUBLIC_SENTRY_ORG }}
-            NEXT_PUBLIC_SENTRY_PROJECT=${{ secrets.NEXT_PUBLIC_SENTRY_PROJECT }}

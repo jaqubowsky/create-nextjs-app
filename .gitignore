@@ -37,7 +37,14 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env.sentry-build-plugin
+
+# Allow client-side environment files (these contain ONLY public variables)
+!env.production.client
 
 # vercel
 .vercel

@@ -18,20 +18,17 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 
-# Copy example env variables
-COPY .env.example .env
-
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG NEXT_PUBLIC_BETTER_AUTH_URL
-ARG NEXT_PUBLIC_NODE_ENV
+# Copy client-side environment configuration
+# This contains ONLY public variables that are safe to commit to repository
+COPY env.production.client .env.production
 
-ENV NEXT_PUBLIC_BETTER_AUTH_URL=${NEXT_PUBLIC_BETTER_AUTH_URL}
-ENV NEXT_PUBLIC_NODE_ENV=${NEXT_PUBLIC_NODE_ENV}
-
-# Disable telemetry
+# Set NODE_ENV for the build process
+# This will be available to both server and client code via T3 Env
+ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Generate Prisma client and build the application
