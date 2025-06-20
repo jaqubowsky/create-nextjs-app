@@ -17,12 +17,13 @@ The project follows a feature-based architecture located within the `src` direct
     -   A typical feature directory `src/features/[featureName]/` may contain:
         -   `components/`: React components specific to this feature.
         -   `actions.ts`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic.
+        -   `queries.ts`: Database queries created with Drizzle
         -   `schemas.ts`: Zod schemas for data validation (e.g., for forms, API inputs/outputs) related to this feature.
         -   Other TypeScript modules for feature-specific logic, types, or hooks.
 -   **`/src/lib`**: Utility functions, shared libraries, helper functions (e.g., `cn` in `src/lib/utils.ts`), and configurations.
 -   **`/src/drizzle`**: Contains Drizzle ORM schema definitions (e.g., `schema.ts`), migration files, and database client setup.
 -   **`/src/hooks`**: Custom React hooks that can be shared across features or within `app`.
--   **`/src/server`**: Server-side specific utilities or configurations not fitting into `actions.ts` within features (use with caution, prefer feature-specific actions).
+-   **`/src/server`**: Server-side shared code used by more than one feature.
 
 ## Developing New Functionalities
 
