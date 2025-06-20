@@ -1,16 +1,11 @@
 import { createSafeActionClient } from "next-safe-action";
-import { zodAdapter } from "next-safe-action/adapters/zod";
 import { headers } from "next/headers";
 import { auth } from "./auth";
 import { env } from "./env";
-import { errors } from "./errors";
+import { ActionError, errors } from "./errors";
 import { getIp, publicApiRateLimiter, RateLimiter } from "./rate-limit";
 
-export class ActionError extends Error {}
-
 export const action = createSafeActionClient({
-  validationAdapter: zodAdapter(),
-
   handleServerError: (e) => {
     if (env.NODE_ENV === "development") {
       console.error(JSON.stringify(e, null, 2));

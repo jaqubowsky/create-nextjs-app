@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAction } from "next-safe-action/hooks";
-import { googleLoginAction } from "../server/actions";
+import { googleLoginAction } from "../actions";
 
 export const GoogleLoginButton = ({
   children,

@@ -10,12 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getErrorMessage } from "@/lib/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { registerAction } from "../actions";
 import { registerSchema } from "../schemas";
-import { registerAction } from "../server/actions";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -31,9 +32,7 @@ export function RegisterForm() {
           router.push("/auth/sign-in");
         },
         onError: (err) => {
-          const errorMessage =
-            err.error.serverError || "An error occurred during registration";
-          toast.error(errorMessage.toString());
+          toast.error(getErrorMessage(err.error.serverError));
         },
       },
       formProps: {

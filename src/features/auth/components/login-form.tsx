@@ -10,12 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getErrorMessage } from "@/lib/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { loginAction } from "../actions";
 import { loginSchema } from "../schemas";
-import { loginAction } from "../server/actions";
 
 export function LoginForm() {
   const router = useRouter();
@@ -30,8 +31,7 @@ export function LoginForm() {
           router.refresh();
         },
         onError: (err) => {
-          const errorMessage = err.error.serverError || "An error occurred";
-          toast.error(errorMessage.toString());
+          toast.error(getErrorMessage(err.error.serverError));
         },
       },
       formProps: {

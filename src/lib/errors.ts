@@ -15,3 +15,5 @@ export const errors = {
     RATE_LIMIT: "Too many requests. Please try again later.",
   },
 };
+
+export class ActionError extends Error {}

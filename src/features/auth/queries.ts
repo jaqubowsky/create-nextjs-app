@@ -8,6 +8,6 @@ export async function getUserByEmail(email: string) {
     .from(user)
     .where(eq(user.email, email))
     .limit(1);
-    
+
   return result[0];
 }

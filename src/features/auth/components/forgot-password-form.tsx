@@ -11,13 +11,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} from "@/features/auth/schemas/auth.schemas";
-import {
   forgotPasswordAction,
   resetPasswordAction,
-} from "@/features/auth/server/actions/auth.actions";
+} from "@/features/auth/actions";
+import {
+  forgotPasswordSchema,
+  resetPasswordWithTokenSchema,
+} from "@/features/auth/schemas";
+import { getErrorMessage } from "@/lib/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -44,9 +45,7 @@ export function ForgotPasswordForm() {
           requestForm.reset();
         },
         onError: (err) => {
-          const errorMessage =
-            err.error.serverError || "Failed to send reset email";
-          toast.error(errorMessage.toString());
+          toast.error(getErrorMessage(err.error.serverError));
         },
       },
       formProps: {
@@ -62,8 +61,8 @@ export function ForgotPasswordForm() {
     action: resetAction,
     handleSubmitWithAction: handleResetSubmit,
   } = useHookFormAction(
-    (data) => resetPasswordAction({ ...data, token: token || "" }),
-    zodResolver(resetPasswordSchema),
+    resetPasswordAction,
+    zodResolver(resetPasswordWithTokenSchema),
     {
       actionProps: {
         onSuccess: () => {
@@ -75,15 +74,14 @@ export function ForgotPasswordForm() {
           }, 1500);
         },
         onError: (err) => {
-          const errorMessage =
-            err.error.serverError || "Failed to reset password";
-          toast.error(errorMessage.toString());
+          toast.error(getErrorMessage(err.error.serverError));
         },
       },
       formProps: {
         defaultValues: {
           password: "",
           confirmPassword: "",
+          token: token ?? "",
         },
       },
     }
@@ -94,6 +92,12 @@ export function ForgotPasswordForm() {
       <div className="space-y-4">
         <Form {...resetForm}>
           <form onSubmit={handleResetSubmit} className="space-y-4">
+            <FormField
+              control={resetForm.control}
+              name="token"
+              render={({ field }) => <Input type="hidden" {...field} />}
+            />
+
             <FormField
               control={resetForm.control}
               name="password"

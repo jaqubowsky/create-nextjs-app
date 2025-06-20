@@ -7,15 +7,15 @@ import {
   resetPasswordWithTokenSchema,
 } from "@/features/auth/schemas";
 import { auth } from "@/lib/auth";
-import { errors } from "@/lib/errors";
+import { ActionError, errors } from "@/lib/errors";
 import { authRateLimiter } from "@/lib/rate-limit";
-import { ActionError, publicActionWithLimiter } from "@/lib/safe-action";
+import { publicActionWithLimiter } from "@/lib/safe-action";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getUserByEmail } from "../db/auth.db";
+import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
-  .schema(loginSchema)
+  .inputSchema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
     const response = await auth.api.signInEmail({
       body: {
@@ -52,7 +52,7 @@ export const googleLoginAction = publicActionWithLimiter(
 });
 
 export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
-  .schema(registerSchema)
+  .inputSchema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const existingUser = await getUserByEmail(email);
     if (existingUser) throw new ActionError(errors.AUTH.EMAIL_IN_USE);
@@ -76,7 +76,7 @@ export const forgotPasswordAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
 )
-  .schema(forgotPasswordSchema)
+  .inputSchema(forgotPasswordSchema)
   .action(async ({ parsedInput: { email } }) => {
     const response = await auth.api.forgetPassword({
       body: {
@@ -97,7 +97,7 @@ export const resetPasswordAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
 )
-  .schema(resetPasswordWithTokenSchema)
+  .inputSchema(resetPasswordWithTokenSchema)
   .action(async ({ parsedInput: { password, token } }) => {
     const response = await auth.api.resetPassword({
       body: {
