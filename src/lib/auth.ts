@@ -5,7 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { env } from "./env";
 import { hashPassword, verifyPassword } from "./hash";
-import { transporter } from "./mailer";
+import { sendMail } from "./mailer";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,7 +22,7 @@ export const auth = betterAuth({
     autoSignIn: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      await transporter.sendMail({
+      sendMail({
         from: env.EMAIL_FROM,
         to: user.email,
         subject: "Reset your password",
@@ -48,7 +48,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     expiresIn: 3600, // 1 hour
     sendVerificationEmail: async ({ user, url }) => {
-      transporter.sendMail({
+      sendMail({
         from: env.EMAIL_FROM,
         to: user.email,
         subject: "Verify your email address",

@@ -1,6 +1,6 @@
 ---
 description: Guides AI on project structure, developing or refactoring functionalities according to the established feature-based architecture, Next.js patterns, and ESLint boundaries.
-globs: 
+globs:
 alwaysApply: false
 ---
 # AI Rules for {{project-name}}
@@ -16,8 +16,8 @@ The project follows a feature-based architecture located within the `src` direct
 -   **`/src/features`**: Core of the feature-based architecture. Each subdirectory (e.g., `src/features/auth/`, `src/features/user-profile/`) encapsulates a distinct feature of the application.
     -   A typical feature directory `src/features/[featureName]/` may contain:
         -   `components/`: React components specific to this feature.
-        -   `actions/`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic.
-        -   `schemas/`: Zod schemas for data validation (e.g., for forms, API inputs/outputs) related to this feature.
+        -   `actions.ts`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic.
+        -   `schemas.ts`: Zod schemas for data validation (e.g., for forms, API inputs/outputs) related to this feature.
         -   Other TypeScript modules for feature-specific logic, types, or hooks.
 -   **`/src/lib`**: Utility functions, shared libraries, helper functions (e.g., `cn` in `src/lib/utils.ts`), and configurations.
 -   **`/src/drizzle`**: Contains Drizzle ORM schema definitions (e.g., `schema.ts`), migration files, and database client setup.

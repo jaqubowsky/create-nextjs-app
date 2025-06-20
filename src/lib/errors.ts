@@ -14,6 +14,6 @@ export const errors = {
     SERVER_ERROR: "An unexpected error occurred. Please try again later.",
     RATE_LIMIT: "Too many requests. Please try again later.",
   },
-};
+} as const;
 
 export class ActionError extends Error {}

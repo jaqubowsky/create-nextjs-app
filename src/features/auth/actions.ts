@@ -15,6 +15,7 @@ import { redirect } from "next/navigation";
 import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
+  .metadata({ actionName: "loginAction" })
   .inputSchema(loginSchema)
   .action(async ({ parsedInput: { email, password } }) => {
     const response = await auth.api.signInEmail({
@@ -34,24 +35,27 @@ export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
 export const googleLoginAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
-).action(async () => {
-  const response = await auth.api.signInSocial({
-    body: {
-      provider: "google",
-    },
-    asResponse: true,
-    headers: await headers(),
+)
+  .metadata({ actionName: "googleLoginAction" })
+  .action(async () => {
+    const response = await auth.api.signInSocial({
+      body: {
+        provider: "google",
+      },
+      asResponse: true,
+      headers: await headers(),
+    });
+
+    if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
+
+    const json = await response.json();
+    if (!json.url) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
+
+    return redirect(json.url);
   });
 
-  if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
-
-  const json = await response.json();
-  if (!json.url) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
-
-  return redirect(json.url);
-});
-
 export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
+  .metadata({ actionName: "registerAction" })
   .inputSchema(registerSchema)
   .action(async ({ parsedInput: { name, email, password } }) => {
     const existingUser = await getUserByEmail(email);
@@ -76,6 +80,7 @@ export const forgotPasswordAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
 )
+  .metadata({ actionName: "forgotPasswordAction" })
   .inputSchema(forgotPasswordSchema)
   .action(async ({ parsedInput: { email } }) => {
     const response = await auth.api.forgetPassword({
@@ -97,6 +102,7 @@ export const resetPasswordAction = publicActionWithLimiter(
   authRateLimiter,
   "auth"
 )
+  .metadata({ actionName: "resetPasswordAction" })
   .inputSchema(resetPasswordWithTokenSchema)
   .action(async ({ parsedInput: { password, token } }) => {
     const response = await auth.api.resetPassword({
@@ -115,6 +121,5 @@ export const resetPasswordAction = publicActionWithLimiter(
     if (!response.ok) {
       throw new ActionError(errors.AUTH.RESET_PASSWORD_FAILED);
     }
-
     return { success: true };
   });
