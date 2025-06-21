@@ -10,151 +10,45 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { forgotPasswordAction } from "@/features/auth/actions";
 import {
-  forgotPasswordAction,
-  resetPasswordAction,
-} from "@/features/auth/actions";
-import {
+  ForgotPasswordFormValues,
   forgotPasswordSchema,
-  resetPasswordWithTokenSchema,
 } from "@/features/auth/schemas";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function ForgotPasswordForm() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  const router = useRouter();
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
-  const {
-    form: requestForm,
-    action: requestAction,
-    handleSubmitWithAction: handleRequestSubmit,
-  } = useHookFormAction(
-    forgotPasswordAction,
-    zodResolver(forgotPasswordSchema),
-    {
-      actionProps: {
-        onSuccess: () => {
-          toast.success(
-            "Check your email for a password reset link. If you don't see it, check your spam folder."
-          );
-          requestForm.reset();
-        },
-        onError: (err) => {
-          toast.error(getErrorMessage(err.error.serverError));
-        },
-      },
-      formProps: {
-        defaultValues: {
-          email: "",
-        },
-      },
-    }
-  );
+  const { execute, isPending } = useAction(forgotPasswordAction, {
+    onSuccess: () => {
+      toast.success(
+        "Check your email for a password reset link. If you don't see it, check your spam folder."
+      );
+      form.reset();
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err.error.serverError));
+    },
+  });
 
-  const {
-    form: resetForm,
-    action: resetAction,
-    handleSubmitWithAction: handleResetSubmit,
-  } = useHookFormAction(
-    resetPasswordAction,
-    zodResolver(resetPasswordWithTokenSchema),
-    {
-      actionProps: {
-        onSuccess: () => {
-          toast.success(
-            "Your password has been successfully reset! You can now sign in."
-          );
-          setTimeout(() => {
-            router.push("/auth/sign-in");
-          }, 1500);
-        },
-        onError: (err) => {
-          toast.error(getErrorMessage(err.error.serverError));
-        },
-      },
-      formProps: {
-        defaultValues: {
-          password: "",
-          confirmPassword: "",
-          token: token ?? "",
-        },
-      },
-    }
-  );
-
-  if (token) {
-    return (
-      <div className="space-y-4">
-        <Form {...resetForm}>
-          <form onSubmit={handleResetSubmit} className="space-y-4">
-            <FormField
-              control={resetForm.control}
-              name="token"
-              render={({ field }) => <Input type="hidden" {...field} />}
-            />
-
-            <FormField
-              control={resetForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>New Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter your new password"
-                      {...field}
-                      disabled={resetAction.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={resetForm.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm your new password"
-                      {...field}
-                      disabled={resetAction.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={resetAction.isPending}
-            >
-              {resetAction.isPending ? "Resetting..." : "Reset Password"}
-            </Button>
-          </form>
-        </Form>
-      </div>
-    );
-  }
+  const handleSubmit = form.handleSubmit(execute);
 
   return (
     <div className="space-y-4">
-      <Form {...requestForm}>
-        <form onSubmit={handleRequestSubmit} className="space-y-4">
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <FormField
-            control={requestForm.control}
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -164,7 +58,7 @@ export function ForgotPasswordForm() {
                     type="email"
                     placeholder="name@example.com"
                     {...field}
-                    disabled={requestAction.isPending}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />
@@ -172,12 +66,8 @@ export function ForgotPasswordForm() {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={requestAction.isPending}
-          >
-            {requestAction.isPending ? "Sending..." : "Send Reset Link"}
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>
       </Form>

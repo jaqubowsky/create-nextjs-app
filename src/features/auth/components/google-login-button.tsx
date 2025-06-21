@@ -12,13 +12,13 @@ export const GoogleLoginButton = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  const action = useAction(googleLoginAction);
+  const { execute, isPending } = useAction(googleLoginAction);
 
   return (
     <Button
       variant={"outline"}
-      disabled={action.isPending}
-      onClick={() => action.execute()}
+      disabled={isPending}
+      onClick={() => execute()}
       className={cn(className)}
     >
       {children}

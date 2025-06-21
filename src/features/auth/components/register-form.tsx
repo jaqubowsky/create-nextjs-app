@@ -12,43 +12,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registerAction } from "../actions";
-import { registerSchema } from "../schemas";
+import { RegisterFormValues, registerSchema } from "../schemas";
 
 export function RegisterForm() {
   const router = useRouter();
 
-  const { form, action, handleSubmitWithAction } = useHookFormAction(
-    registerAction,
-    zodResolver(registerSchema),
-    {
-      actionProps: {
-        onSuccess: async () => {
-          toast.success("Registration successful! Please verify your email.");
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-          router.push("/auth/sign-in");
-        },
-        onError: (err) => {
-          toast.error(getErrorMessage(err.error.serverError));
-        },
-      },
-      formProps: {
-        defaultValues: {
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        },
-      },
-    }
-  );
+  const { execute, isPending } = useAction(registerAction, {
+    onSuccess: async () => {
+      toast.success("Registration successful! Please verify your email.");
+
+      router.push("/auth/sign-in");
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err.error.serverError));
+    },
+  });
+
+  const handleSubmit = form.handleSubmit(execute);
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmitWithAction} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <FormField
           control={form.control}
           name="name"
@@ -60,7 +59,7 @@ export function RegisterForm() {
                   placeholder="Your Name"
                   {...field}
                   type="text"
-                  disabled={action.isPending}
+                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -78,7 +77,7 @@ export function RegisterForm() {
                   placeholder="m@example.com"
                   {...field}
                   type="email"
-                  disabled={action.isPending}
+                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -96,7 +95,7 @@ export function RegisterForm() {
                   type="password"
                   placeholder="********"
                   {...field}
-                  disabled={action.isPending}
+                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -114,7 +113,7 @@ export function RegisterForm() {
                   type="password"
                   placeholder="********"
                   {...field}
-                  disabled={action.isPending}
+                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -122,8 +121,8 @@ export function RegisterForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={action.isPending}>
-          {action.isPending ? "Registering..." : "Register"}
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? "Registering..." : "Register"}
         </Button>
       </form>
     </Form>

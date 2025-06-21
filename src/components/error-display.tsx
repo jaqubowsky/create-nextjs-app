@@ -4,7 +4,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { logError } from "@/lib/sentry";
-import { AlertTriangle, Home, RotateCcw } from "lucide-react";
+import {
+  DeviceRotateIcon,
+  HouseIcon,
+  WarningDiamondIcon,
+  WarningIcon,
+} from "@phosphor-icons/react";
 import { useEffect } from "react";
 
 interface ErrorDisplayProps {
@@ -38,7 +43,7 @@ export function ErrorDisplay({
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-            <AlertTriangle className="h-6 w-6 text-destructive" />
+            <WarningIcon className="h-6 w-6 text-destructive" />
           </div>
           <h2 className="text-lg font-semibold">{title}</h2>
           <p className="text-sm text-muted-foreground">{description}</p>
@@ -46,7 +51,7 @@ export function ErrorDisplay({
         <CardContent className="space-y-4">
           {process.env.NODE_ENV === "development" && (
             <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
+              <WarningDiamondIcon className="h-4 w-4" />
               <AlertTitle>Development Error Details</AlertTitle>
               <AlertDescription className="mt-2">
                 <details>
@@ -64,7 +69,7 @@ export function ErrorDisplay({
 
           <div className="space-y-2">
             <Button onClick={reset} className="w-full" size="sm">
-              <RotateCcw className="mr-2 h-4 w-4" />
+              <DeviceRotateIcon className="mr-2 h-4 w-4" />
               Try again
             </Button>
 
@@ -75,7 +80,7 @@ export function ErrorDisplay({
                 className="w-full"
                 size="sm"
               >
-                <Home className="mr-2 h-4 w-4" />
+                <HouseIcon className="mr-2 h-4 w-4" />
                 Go to homepage
               </Button>
             )}

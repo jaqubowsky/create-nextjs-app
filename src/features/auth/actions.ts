@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth";
 import { ActionError, errors } from "@/lib/errors";
 import { authRateLimiter } from "@/lib/rate-limit";
 import { publicActionWithLimiter } from "@/lib/safe-action";
+import { timeout } from "@/lib/timeout";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidateUserCache } from "./cache";
@@ -122,7 +123,8 @@ export const resetPasswordAction = publicActionWithLimiter(
     if (!response.ok) {
       throw new ActionError(errors.AUTH.RESET_PASSWORD_FAILED);
     }
-    return { success: true };
+
+    timeout(1500).then(() => redirect("/auth/sign-in"));
   });
 
 export const refreshUserAction = publicActionWithLimiter(
