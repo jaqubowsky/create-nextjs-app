@@ -1,17 +1,19 @@
 {
   "name": "nextjs-template-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently --kill-others --names \"FE,DB\" --prefix-colors \"blue,yellow\" \"npm run next:dev\" \"npm run db:studio\"",
+    "next:dev": "next dev --turbopack",
     "db:generate": "npx drizzle-kit generate",
-    "migrate": "npm run db:generate && npx drizzle-kit migrate",
-    "studio": "npx drizzle-kit studio",
-    "build": "npm run lint && npm run typecheck && next build",
+    "db:migrate": "npm run db:generate && npx drizzle-kit migrate",
+    "db:studio": "npx drizzle-kit studio",
+    "next:build": "npm run lint && npm run typecheck && next build",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "commit": "cz"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -22,7 +24,7 @@
     "@react-email/render": "^1.1.2",
     "@sentry/nextjs": "^9.30.0",
     "bcryptjs": "^3.0.2",
-    "better-auth": "^1.2.9",
+    "better-auth": "^1.2.10",
     "drizzle-orm": "^0.44.2",
     "next": "^15.4.0",
     "next-safe-action": "^8.0.4",
@@ -50,6 +52,7 @@
     "@types/react-dom": "^19.1.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "concurrently": "^9.1.2",
     "cz-conventional-changelog": "^3.3.0",
     "drizzle-kit": "^0.31.1",
     "eslint": "^9.29.0",

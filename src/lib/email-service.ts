@@ -1,8 +1,8 @@
-import PaymentFailedEmail from "../../emails/templates/payment-failed";
-import ResetPasswordEmail from "../../emails/templates/reset-password";
-import SubscriptionCancelledEmail from "../../emails/templates/subscription-cancelled";
-import SubscriptionPurchasedEmail from "../../emails/templates/subscription-purchased";
-import VerifyEmailEmail from "../../emails/templates/verify-email";
+import PaymentFailedEmail from "../emails/templates/payment-failed";
+import ResetPasswordEmail from "../emails/templates/reset-password";
+import SubscriptionCancelledEmail from "../emails/templates/subscription-cancelled";
+import SubscriptionPurchasedEmail from "../emails/templates/subscription-purchased";
+import VerifyEmailEmail from "../emails/templates/verify-email";
 import { sendReactEmail } from "./mailer";
 
 interface EmailUser {

@@ -7,7 +7,7 @@ export const emailConfig = {
   baseUrl: env.BETTER_AUTH_URL,
 } as const;
 
-export const getAppUrl = (path: string = "") => {
+export const getAppUrl = (path = "") => {
   return `${emailConfig.baseUrl}${path}`;
 };
 

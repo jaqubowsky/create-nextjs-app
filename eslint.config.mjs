@@ -1,4 +1,4 @@
-import { FlatCompat } from "@eslint/eslintrc";
+  import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import boundaries from "eslint-plugin-boundaries";
 import tseslint from "typescript-eslint";
@@ -27,7 +27,7 @@ export default tseslint.config(
       },
     },
   },
-  {
+  { 
     plugins: {
       boundaries,
     },
@@ -45,6 +45,7 @@ export default tseslint.config(
             "src/schemas/**/*",
             "src/server/**/*",
             "src/config/**/*",
+            "src/emails/**/*",
             "src/middleware.ts",
             "src/instrumentation.ts",
             "src/instrumentation-client.ts",
