@@ -1,7 +1,12 @@
 pre-commit:
-  scripts:
-    "pre-commit.sh":
-      runner: bash
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: npm run lint -- --fix {staged_files}
+      stage_fixed: true
+    typecheck:
+      run: npm run typecheck
 
 commit-msg:
   scripts:
