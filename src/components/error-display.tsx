@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { logError } from "@/lib/sentry";
 import {
-  DeviceRotateIcon,
+  ArrowsCounterClockwiseIcon,
   HouseIcon,
   WarningDiamondIcon,
   WarningIcon,
@@ -38,7 +38,7 @@ export function ErrorDisplay({
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center bg-background p-4 ${className}`}
+      className={`w-full h-full flex items-center justify-center bg-background p-4 ${className}`}
     >
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
@@ -69,7 +69,7 @@ export function ErrorDisplay({
 
           <div className="space-y-2">
             <Button onClick={reset} className="w-full" size="sm">
-              <DeviceRotateIcon className="mr-2 h-4 w-4" />
+              <ArrowsCounterClockwiseIcon className="mr-2 h-4 w-4" />
               Try again
             </Button>
 

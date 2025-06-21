@@ -29,9 +29,9 @@ export default function LoginPage() {
           </GoogleLoginButton>
 
           <div className="relative flex items-center justify-center space-x-2 py-2">
-            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800"></div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">OR</span>
-            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800"></div>
+            <div className="h-px flex-1 bg-gray-200"></div>
+            <span className="text-xs text-gray-500">OR</span>
+            <div className="h-px flex-1 bg-gray-200"></div>
           </div>
         </div>
 

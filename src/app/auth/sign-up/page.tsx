@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { GoogleLoginButton } from "@/features/auth/components/google-login-button";
 import { RegisterForm } from "@/features/auth/components/register-form";
-import { GoogleLogoIcon } from "@phosphor-icons/react";
+import { GoogleLogoIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -29,9 +29,9 @@ export default function RegisterPage() {
           </GoogleLoginButton>
 
           <div className="relative flex items-center justify-center space-x-2 py-2">
-            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800"></div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">OR</span>
-            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800"></div>
+            <div className="h-px flex-1 bg-gray-200"></div>
+            <span className="text-xs text-gray-500">OR</span>
+            <div className="h-px flex-1 bg-gray-200"></div>
           </div>
         </div>
 
