@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     useCache: true,
+    authInterrupts: true,
     optimizePackageImports: ["@phosphor-icons/react"],
   },
 };
