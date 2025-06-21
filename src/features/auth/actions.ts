@@ -14,7 +14,6 @@ import { timeout } from "@/lib/timeout";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { revalidateUserCache } from "../../server/user/cache";
 import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
@@ -153,30 +152,6 @@ export const resetPasswordAction = publicActionWithLimiter(
     }
 
     void timeout(1500).then(() => redirect("/auth/sign-in"));
-  });
-
-export const refreshUserAction = publicActionWithLimiter(
-  authRateLimiter,
-  "auth"
-)
-  .metadata({ actionName: "refreshUserAction" })
-  .action(async () => {
-    const response = await auth.api.getSession({
-      asResponse: true,
-      headers: await headers(),
-    });
-
-    if (!response.ok) throw new ActionError(errors.AUTH.UNAUTHORIZED);
-
-    const json = (await response.json()) as {
-      user: { id: string } | null;
-      session: object | null;
-    };
-    if (!json.user) throw new ActionError(errors.AUTH.UNAUTHORIZED);
-
-    revalidateUserCache(json.user.id);
-
-    return { success: true };
   });
 
 export const resendVerificationEmailAction = publicActionWithLimiter(

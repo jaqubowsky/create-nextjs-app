@@ -90,6 +90,10 @@ export default tseslint.config(
               allow: ["shared", "feature"],
             },
             {
+              from: ["shared"],
+              allow: ["feature"],
+            },
+            {
               from: ["app"],
               allow: [["app", { fileName: "*.css" }]],
             },

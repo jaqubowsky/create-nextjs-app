@@ -23,6 +23,7 @@ export const errors = {
   },
   STRIPE: {
     CUSTOMER_NOT_FOUND: "Customer not found.",
+    SUBSCRIPTION_ALREADY_ACTIVE: "Subscription already active.",
   },
   GENERAL: {
     SERVER_ERROR: "An unexpected error occurred. Please try again later.",

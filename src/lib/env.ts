@@ -21,6 +21,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_API_VER: z.string(),
+    STRIPE_PRICE_ID: z.string(),
 
     SENTRY_AUTH_TOKEN: z.string(),
   },
