@@ -2,7 +2,7 @@ import { User } from "@/drizzle/schema";
 import * as Sentry from "@sentry/nextjs";
 import { env } from "./env";
 
-export async function setSentryUserContext(user: Partial<User> | null) {
+export function setSentryUserContext(user: Partial<User> | null) {
   Sentry.setUser(user);
 }
 

@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "migrate": "npx drizzle-kit generate && npx drizzle-kit migrate",
+    "db:generate": "npx drizzle-kit generate",
+    "migrate": "npm run db:generate && npx drizzle-kit migrate",
     "studio": "npx drizzle-kit studio",
-    "build": "npx drizzle-kit generate && next build",
+    "build": "npm run lint && npm run typecheck && next build",
+    "typecheck": "tsc --noEmit",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
@@ -57,7 +60,8 @@
     "tailwindcss": "^4.1.10",
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.34.1"
   },
   "overrides": {
     "esbuild": "0.25.4"

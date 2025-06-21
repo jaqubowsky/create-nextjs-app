@@ -36,7 +36,7 @@ export const privateAction = action.use(async ({ next }) => {
   const ip = await getIp();
   if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT);
 
-  const { success } = await publicApiRateLimiter.limit(ip);
+  const { success } = publicApiRateLimiter.limit(ip);
   if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT);
 
   setSentryUserContext({
@@ -51,7 +51,7 @@ export const publicAction = action.use(async ({ next }) => {
   const ip = await getIp();
   if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT);
 
-  const { success } = await publicApiRateLimiter.limit(ip);
+  const { success } = publicApiRateLimiter.limit(ip);
   if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT);
 
   return next();
@@ -67,7 +67,7 @@ export const publicActionWithLimiter = (
 
     const identifier = customIdentifier ? `${customIdentifier}:${ip}` : ip;
 
-    const { success } = await limiter.limit(identifier);
+    const { success } = limiter.limit(identifier);
     if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT);
 
     return next();

@@ -16,9 +16,9 @@ export const transporter = nodemailer.createTransport({
   secure: env.NODE_ENV === "production",
 });
 
-export const sendMail = (mailOptions: MailOptions) => {
+export const sendMail = async (mailOptions: MailOptions) => {
   try {
-    transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
   } catch (error) {
     logError({ error, origin: "sendMail" });
 

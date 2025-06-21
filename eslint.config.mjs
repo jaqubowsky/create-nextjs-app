@@ -1,5 +1,7 @@
 import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
 import boundaries from "eslint-plugin-boundaries";
+import tseslint from "typescript-eslint";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -9,10 +11,22 @@ const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
 });
 
-const eslintConfig = [
+export default tseslint.config(
+  js.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
   {
     plugins: {
       boundaries,
@@ -30,7 +44,12 @@ const eslintConfig = [
             "src/lib/**/*",
             "src/schemas/**/*",
             "src/server/**/*",
+            "src/config/**/*",
             "src/middleware.ts",
+            "src/instrumentation.ts",
+            "src/instrumentation-client.ts",
+            "sentry.edge.config.ts",
+            "src/sentry.server.config.ts",
           ],
         },
         {
@@ -78,7 +97,5 @@ const eslintConfig = [
         },
       ],
     },
-  },
-];
-
-export default eslintConfig;
+  }
+);

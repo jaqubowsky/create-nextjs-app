@@ -48,7 +48,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   return (
     <div className="space-y-4">
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <FormField
             control={form.control}
             name="password"

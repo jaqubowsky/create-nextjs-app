@@ -19,7 +19,7 @@ import Stripe from "stripe";
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const headersList = await headers();
-  const signature = headersList.get("stripe-signature") as string;
+  const signature = headersList.get("stripe-signature")!;
 
   let event: Stripe.Event;
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   try {
     switch (event.type) {
       case "customer.subscription.created": {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object;
 
         const user = await getUserByStripeCustomerId(
           subscription.customer as string
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object;
 
         const isActive = subscription.status === "active";
         const plan = isActive ? SubscriptionPlan.PAID : SubscriptionPlan.FREE;
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object;
 
         await updateUserPlan(
           subscription.customer as string,
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object;
         if (!invoice.customer) {
           throw new Error(errors.STRIPE.CUSTOMER_NOT_FOUND);
         }
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object;
         if (!invoice.customer) {
           throw new Error(errors.STRIPE.CUSTOMER_NOT_FOUND);
         }

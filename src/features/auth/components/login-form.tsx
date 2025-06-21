@@ -31,7 +31,7 @@ export function LoginForm() {
   });
 
   const { execute, isPending } = useAction(loginAction, {
-    onSuccess: async () => {
+    onSuccess: () => {
       router.push("/");
       router.refresh();
     },
@@ -44,7 +44,7 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
         <FormField
           control={form.control}
           name="email"

@@ -13,6 +13,7 @@ import { publicActionWithLimiter } from "@/lib/safe-action";
 import { timeout } from "@/lib/timeout";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { revalidateUserCache } from "./cache";
 import { getUserByEmail } from "./queries";
 
@@ -48,10 +49,37 @@ export const googleLoginAction = publicActionWithLimiter(
       headers: await headers(),
     });
 
-    if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
+    if (!response.ok) {
+      if (response.status >= 500) {
+        throw new ActionError(errors.AUTH.OAUTH_SERVER_ERROR);
+      }
 
-    const json = await response.json();
-    if (!json.url) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
+      if (response.status === 400) {
+        throw new ActionError(errors.AUTH.OAUTH_INVALID_REQUEST);
+      }
+
+      try {
+        const errorData = (await response.json()) as { error: string };
+
+        if (errorData.error === "access_denied") {
+          throw new ActionError(errors.AUTH.OAUTH_ACCESS_DENIED);
+        }
+
+        if (errorData.error === "account_exists") {
+          throw new ActionError(errors.AUTH.OAUTH_ACCOUNT_EXISTS);
+        }
+
+        throw new ActionError(errors.AUTH.OAUTH_PROVIDER_ERROR);
+      } catch (parseError) {
+        if (parseError instanceof ActionError) {
+          throw parseError;
+        }
+        throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
+      }
+    }
+
+    const json = (await response.json()) as { url: string };
+    if (!json.url) throw new ActionError(errors.AUTH.OAUTH_PROVIDER_ERROR);
 
     return redirect(json.url);
   });
@@ -75,7 +103,7 @@ export const registerAction = publicActionWithLimiter(authRateLimiter, "auth")
 
     if (!response.ok) throw new ActionError(errors.AUTH.REGISTRATION_FAILED);
 
-    return { success: true, message: "Registration successful!" };
+    redirect(`/auth/verify-email?email=${encodeURIComponent(email)}`);
   });
 
 export const forgotPasswordAction = publicActionWithLimiter(
@@ -124,7 +152,7 @@ export const resetPasswordAction = publicActionWithLimiter(
       throw new ActionError(errors.AUTH.RESET_PASSWORD_FAILED);
     }
 
-    timeout(1500).then(() => redirect("/auth/sign-in"));
+    void timeout(1500).then(() => redirect("/auth/sign-in"));
   });
 
 export const refreshUserAction = publicActionWithLimiter(
@@ -140,10 +168,46 @@ export const refreshUserAction = publicActionWithLimiter(
 
     if (!response.ok) throw new ActionError(errors.AUTH.UNAUTHORIZED);
 
-    const json = await response.json();
+    const json = (await response.json()) as {
+      user: { id: string } | null;
+      session: object | null;
+    };
     if (!json.user) throw new ActionError(errors.AUTH.UNAUTHORIZED);
 
     revalidateUserCache(json.user.id);
 
     return { success: true };
+  });
+
+export const resendVerificationEmailAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
+  .metadata({ actionName: "resendVerificationEmailAction" })
+  .inputSchema(z.object({ email: z.string().email() }))
+  .action(async ({ parsedInput: { email } }) => {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return {
+        success: true,
+        message: "If the email exists, a verification link has been sent.",
+      };
+    }
+
+    if (user.emailVerified) throw new ActionError(errors.AUTH.EMAIL_VERIFIED);
+
+    const response = await auth.api.sendVerificationEmail({
+      body: { email },
+      asResponse: true,
+      headers: await headers(),
+    });
+
+    if (!response.ok) {
+      throw new ActionError(errors.AUTH.SEND_VERIFICATION_EMAIL_FAILED);
+    }
+
+    return {
+      success: true,
+      message: "Verification email sent! Please check your inbox.",
+    };
   });

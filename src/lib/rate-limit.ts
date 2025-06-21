@@ -1,3 +1,4 @@
+import { RATE_LIMITS } from "@/config";
 import { headers } from "next/headers";
 
 export interface RateLimitResponse {
@@ -13,7 +14,7 @@ export interface RateLimitResponse {
 }
 
 export interface RateLimiter {
-  limit: (identifier: string) => Promise<RateLimitResponse>;
+  limit: (identifier: string) => RateLimitResponse;
 }
 
 export const getIp = async () => {
@@ -42,14 +43,14 @@ export class MemoryRateLimiter implements RateLimiter {
       unit === "s"
         ? 1000
         : unit === "m"
-        ? 60 * 1000
-        : unit === "h"
-        ? 60 * 60 * 1000
-        : 1000;
+          ? 60 * 1000
+          : unit === "h"
+            ? 60 * 60 * 1000
+            : 1000;
     this.windowMs = parseInt(amount) * multiplier;
   }
 
-  async limit(identifier: string): Promise<RateLimitResponse> {
+  limit(identifier: string): RateLimitResponse {
     const now = Date.now();
     const windowStart = now - this.windowMs;
 
@@ -89,5 +90,12 @@ export class MemoryRateLimiter implements RateLimiter {
   }
 }
 
-export const authRateLimiter = new MemoryRateLimiter(5, "30 s");
-export const publicApiRateLimiter = new MemoryRateLimiter(20, "10 s");
+export const authRateLimiter = new MemoryRateLimiter(
+  RATE_LIMITS.AUTH.MAX_REQUESTS,
+  RATE_LIMITS.AUTH.WINDOW
+);
+
+export const publicApiRateLimiter = new MemoryRateLimiter(
+  RATE_LIMITS.PUBLIC_API.MAX_REQUESTS,
+  RATE_LIMITS.PUBLIC_API.WINDOW
+);

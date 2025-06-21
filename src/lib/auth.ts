@@ -1,3 +1,4 @@
+import { AUTH_CONFIG } from "@/config";
 import { db } from "@/drizzle/db";
 import * as schema from "@/drizzle/schema";
 import { betterAuth } from "better-auth";
@@ -6,8 +7,6 @@ import { nextCookies } from "better-auth/next-js";
 import { sendResetPasswordEmail, sendVerifyEmailEmail } from "./email-service";
 import { env } from "./env";
 import { hashPassword, verifyPassword } from "./hash";
-
-const ONE_HOUR = 3600;
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -49,7 +48,7 @@ export const auth = betterAuth({
     enabled: true,
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    expiresIn: ONE_HOUR,
+    expiresIn: AUTH_CONFIG.EMAIL_VERIFICATION_EXPIRY,
     sendVerificationEmail: async ({ user, url }) => {
       await sendVerifyEmailEmail(
         {

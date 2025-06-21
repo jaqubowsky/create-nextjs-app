@@ -33,7 +33,7 @@ export function RegisterForm() {
   });
 
   const { execute, isPending } = useAction(registerAction, {
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Registration successful! Please verify your email.");
 
       router.push("/auth/sign-in");
@@ -47,7 +47,7 @@ export function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
         <FormField
           control={form.control}
           name="name"

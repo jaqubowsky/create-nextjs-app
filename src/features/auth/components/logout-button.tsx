@@ -26,7 +26,7 @@ export function SignOutButton({
   };
 
   return (
-    <Button onClick={handleSignOut} className={cn(className)}>
+    <Button onClick={() => void handleSignOut()} className={cn(className)}>
       {children}
     </Button>
   );
