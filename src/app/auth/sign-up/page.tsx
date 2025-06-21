@@ -5,9 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
 import { GoogleLoginButton } from "@/features/auth/components/google-login-button";
 import { RegisterForm } from "@/features/auth/components/register-form";
+import { GoogleLogoIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -24,7 +24,7 @@ export default function RegisterPage() {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <GoogleLoginButton className="w-full py-2 transition-all hover:shadow-md">
-            <Icon name="google" className="mr-2" />
+            <GoogleLogoIcon className="mr-2 h-4 w-4" />
             <span>Continue with Google</span>
           </GoogleLoginButton>
 
