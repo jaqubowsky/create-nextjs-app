@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 ## CODING_PRACTICES
@@ -16,4 +16,3 @@ alwaysApply: true
 - Proactively address edge cases, race conditions, and security considerations without being prompted.
 - When debugging, provide targeted diagnostic approaches rather than shotgun solutions.
 - Suggest comprehensive testing strategies rather than just example tests, including considerations for mocking, test organization, and coverage.
-

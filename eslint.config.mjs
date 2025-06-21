@@ -30,6 +30,7 @@ const eslintConfig = [
             "src/lib/**/*",
             "src/schemas/**/*",
             "src/server/**/*",
+            "src/middleware.ts",
           ],
         },
         {

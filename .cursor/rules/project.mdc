@@ -1,29 +1,44 @@
 ---
-description: Guides AI on project structure, developing or refactoring functionalities according to the established feature-based architecture, Next.js patterns, and ESLint boundaries.
+description: Guides AI on project structure, developing or refactoring functionalities according to the established feature-based architecture, Next.js patterns, and ESLint boundaries. Should be used when adding new functionalities or editing existing ones.
 globs:
 alwaysApply: false
 ---
-# AI Rules for {{project-name}}
+# AI Rules for NextJS Template App
 
 ## Project Structure Overview
 
 The project follows a feature-based architecture located within the `src` directory:
 
--   **`/src/app`**: Contains Next.js pages, layouts, and route handlers. This is where user-facing parts of features are exposed.
+-   **`/src/app`**: Contains Next.js App Router pages, layouts, and route handlers. This is where user-facing parts of features are exposed.
 -   **`/src/components`**:
     -   **`/src/components/ui`**: For ShadCN UI components and other general-purpose, reusable UI primitives. These are styled with TailwindCSS and utilize `cn` from `@/lib/utils`.
     -   **`/src/components/` (root)**: For other shared, application-specific React components that might be used across multiple features but are not necessarily low-level UI primitives.
--   **`/src/features`**: Core of the feature-based architecture. Each subdirectory (e.g., `src/features/auth/`, `src/features/user-profile/`) encapsulates a distinct feature of the application.
+-   **`/src/features`**: Core of the feature-based architecture. Each subdirectory (e.g., `src/features/auth/`) encapsulates a distinct feature of the application.
     -   A typical feature directory `src/features/[featureName]/` may contain:
         -   `components/`: React components specific to this feature.
-        -   `actions.ts`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic.
-        -   `queries.ts`: Database queries created with Drizzle
-        -   `schemas.ts`: Zod schemas for data validation (e.g., for forms, API inputs/outputs) related to this feature.
+        -   `actions.ts`: Next.js Server Actions (using `next-safe-action`) for this feature's backend logic with built-in rate limiting.
+        -   `queries.ts`: Feature-specific database queries created with Drizzle ORM.
+        -   `schemas.ts`: Feature-specific Zod schemas for data validation (e.g., for forms, API inputs/outputs).
+        -   `cache.ts`: Feature-specific caching logic and cache management.
         -   Other TypeScript modules for feature-specific logic, types, or hooks.
--   **`/src/lib`**: Utility functions, shared libraries, helper functions (e.g., `cn` in `src/lib/utils.ts`), and configurations.
--   **`/src/drizzle`**: Contains Drizzle ORM schema definitions (e.g., `schema.ts`), migration files, and database client setup.
--   **`/src/hooks`**: Custom React hooks that can be shared across features or within `app`.
--   **`/src/server`**: Server-side shared code used by more than one feature.
+-   **`/src/lib`**: Utility functions, shared libraries, helper functions, and configurations.
+-   **`/src/drizzle`**: Contains Drizzle ORM schema definitions, migration files, and database client setup.
+-   **`/src/server`**: Server-side shared utilities used by multiple features.
+    -   **`/src/server/stripe`**: Stripe server-side utilities and webhook handlers.
+-   **`/emails`**: React Email templates for transactional emails.
+
+## Tech Stack Overview
+
+-   **Frontend**: Next.js 15.4 (App Router), React 19, TailwindCSS 4, ShadCN UI, Phosphor Icons
+-   **Backend**: Next.js API Routes/Server Actions (prefer Server Actions with `next-safe-action`)
+-   **Database**: PostgreSQL with Drizzle ORM
+-   **Authentication**: Better Auth with Google OAuth integration
+-   **Payments**: Stripe with webhook support for subscriptions and invoices
+-   **Email**: React Email with Nodemailer for SMTP
+-   **Rate Limiting**: Memory-based rate limiting with configurable thresholds
+-   **Monitoring**: Sentry for error tracking and performance monitoring
+-   **Deployment**: Docker with multi-stage builds for production
+-   **Environment**: T3 Env for runtime environment variable validation
 
 ## Developing New Functionalities
 
@@ -32,36 +47,86 @@ When asked to implement a new feature (e.g., "User Dashboard"):
 1.  **Primary Location**:
     *   Create a new directory for the feature: `src/features/user-dashboard/`.
     *   Place feature-specific React components in `src/features/user-dashboard/components/`.
-    *   Implement backend logic using Next.js Server Actions in `src/features/user-dashboard/actions/` (using `next-safe-action`).
-    *   Define Zod validation schemas in `src/features/user-dashboard/schemas/`. Use these for form validation (with `react-hook-form` and `@next-safe-action/adapter-react-hook-form`) and server action input validation.
+    *   Implement backend logic using Next.js Server Actions in `src/features/user-dashboard/actions.ts` (using `next-safe-action`).
+    *   Define Zod validation schemas in `src/features/user-dashboard/schemas.ts`. Use these for form validation (with `react-hook-form` and `@next-safe-action`) and server action input validation.
+    *   Create database queries in `src/features/user-dashboard/queries.ts` using Drizzle ORM.
+    *   Add caching logic in `src/features/user-dashboard/cache.ts` if needed.
 
 2.  **Database Changes (Drizzle ORM)**:
     *   If the feature requires new tables or modifications to existing ones, update the schema definitions in `src/drizzle/schema.ts`.
-    *   Remind the user to generate migrations: `npx drizzle-kit generate`.
-    *   Remind the user to apply migrations: `npx drizzle-kit migrate`.
+    *   **Always remind the user to run**: `npm run migrate` (which runs both generate and migrate commands).
+    *   For development database exploration, suggest: `npm run studio` to open Drizzle Studio.
 
-3.  **Shared Components & Utilities**:
+3.  **Authentication & Rate Limiting**:
+    *   Use `publicAction`, `authAction`, or `publicActionWithLimiter` from `@/lib/safe-action` for server actions.
+    *   Apply appropriate rate limiting using `authRateLimiter` or `publicApiRateLimiter` from `@/lib/rate-limit`.
+    *   For protected routes, ensure proper authentication checks using Better Auth.
+
+4.  **Payments Integration**:
+    *   For payment-related features, use the Stripe client from `@/lib/stripe`.
+    *   Create webhook handlers in `src/app/api/stripe/webhook/` following the existing pattern.
+    *   Update user records with Stripe customer IDs in the database schema.
+
+5.  **Email Integration**:
+    *   Create email templates in the `/emails` directory using React Email components.
+    *   Use the email configuration from `@/lib/env` for SMTP settings.
+    *   Send emails through server actions or API routes using Nodemailer.
+
+6.  **Error Handling & Monitoring**:
+    *   Use proper error handling with custom error types from `@/lib/errors`.
+    *   Ensure Sentry captures important errors for monitoring.
+    *   Use error boundaries in React components where appropriate.
+
+7.  **Shared Components & Utilities**:
     *   If a new UI component is generic and reusable across multiple features:
         *   Place it in `src/components/ui/` if it's a ShadCN-style primitive or follows that pattern.
         *   Place it in `src/components/` (root) if it's a more complex shared component.
     *   If new utility functions are developed that could be useful across the application, place them in `src/lib/`.
 
-4.  **Routes & Pages (Next.js App Router)**:
-    *   Create new pages, layouts, or route handlers for the feature within `src/app/`. For example, a user dashboard page might be `src/app/dashboard/page.tsx`.
-    *   These app router components will typically import and use components from `src/features/user-dashboard/components/` and `src/components/`.
+8.  **Routes & Pages (Next.js App Router)**:
+    *   Create new pages, layouts, or route handlers for the feature within `src/app/`.
+    *   Use proper metadata and SEO optimization for pages.
+    *   These app router components will typically import and use components from feature directories and shared components.
 
-5.  **ESLint Module Boundaries**:
+9.  **ESLint Module Boundaries**:
     *   **Crucially, all new code must adhere to the module boundary rules defined in `eslint.config.mjs`.**
-        *   `shared` (e.g., `src/components/`, `src/lib/`, `src/drizzle/`) can only import from other `shared` modules.
+        *   `shared` (e.g., `src/components/`, `src/lib/`, `src/drizzle/`, `src/server/`) can only import from other `shared` modules.
         *   `feature` (e.g., `src/features/user-dashboard/`) can import from `shared` and from within the *same* feature (`src/features/user-dashboard/`).
         *   `app` (e.g., `src/app/dashboard/`) can import from `shared` and `feature` modules.
-    *   The AI should verify its suggestions against these rules.
+    *   The AI should verify its suggestions against these rules and warn if violations are detected.
 
-7.  **Tech Stack Reminder**:
-    *   **Frontend**: Next.js 15.3 (App Router), React 19, TailwindCSS 4, ShadCN UI.
-    *   **Backend**: Next.js API Routes/Server Actions (prefer Server Actions with `next-safe-action`).
-    *   **Database**: PostgreSQL with Drizzle ORM.
-    *   **Form Handling**: React Hook Form with Zod validation and `next-safe-action` hook form adapter.
-    *   **Authentication**: Better Auth.
+## Environment Variables
 
-By following this structure, new functionalities will be modular, maintainable, and consistent with the project's architecture.
+When adding new functionality that requires environment variables:
+
+1.  **Add to `src/lib/env.ts`**:
+    *   Server-only variables in the `server` object
+    *   Client-safe variables in the `shared` object with `NEXT_PUBLIC_` prefix
+    *   Update the `experimental__runtimeEnv` mapping
+
+2.  **Update documentation**:
+    *   Add examples to README.md environment variables section
+    *   Update `env.production.client` if adding public variables
+
+## Development Workflow
+
+1.  **Start Development**: `npm run dev` (uses Turbopack)
+2.  **Database Changes**: `npm run migrate` (generate + apply migrations)
+3.  **Database Studio**: `npm run studio` (open Drizzle Studio)
+4.  **Linting**: `npm run lint` (ESLint with boundaries)
+5.  **Build**: `npm run build` (includes migration generation)
+
+## Best Practices
+
+-   **Always use TypeScript** with proper type definitions
+-   **Validate all inputs** using Zod schemas
+-   **Apply rate limiting** to public endpoints and actions
+-   **Handle errors gracefully** with proper user feedback
+-   **Use server actions** over API routes when possible
+-   **Follow the feature-based architecture** strictly
+-   **Respect ESLint boundaries** to maintain modularity
+-   **Use proper caching strategies** for database queries
+-   **Implement proper SEO** with Next.js metadata API
+-   **Test integrations** (Stripe webhooks, email sending, etc.)
+
+By following this structure, new functionalities will be modular, maintainable, secure, and consistent with the project's architecture.
