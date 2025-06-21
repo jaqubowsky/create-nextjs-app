@@ -46,38 +46,42 @@ A comprehensive template for scaffolding modern NextJS applications with authent
    Create a `.env` file with the following variables:
 
    ```env
-   # Database
-   DATABASE_URL=postgresql://username:password@localhost:5432/dbname
+   NODE_ENV=development
+   SKIP_ENV_CHECK="true"
 
-   # Authentication
-   BETTER_AUTH_SECRET=your-secure-random-string
-   NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
-   GOOGLE_CLIENT_ID=your-google-client-id
-   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   # Server-only variables (not exposed to client)
+   DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 
-   # Email Configuration
-   EMAIL_SERVER_HOST=smtp.gmail.com
-   EMAIL_SERVER_PORT=587
-   EMAIL_SERVER_USER=your-email@gmail.com
-   EMAIL_SERVER_PASSWORD=your-app-password
-   EMAIL_FROM=your-email@gmail.com
-   EMAIL_SERVICE=gmail
+   GOOGLE_CLIENT_ID="sample-google-client-id"
+   GOOGLE_CLIENT_SECRET="sample-google-client-secret"
 
-   # Stripe
-   STRIPE_SECRET_KEY=sk_test_your-stripe-secret-key
-   STRIPE_WEBHOOK_SECRET=whsec_your-webhook-secret
-   STRIPE_API_VER=2024-06-20
+   BETTER_AUTH_SECRET="sample-secret-key-for-typecheck"
 
-   # Sentry
-   SENTRY_AUTH_TOKEN=your-sentry-auth-token
-   NEXT_PUBLIC_SENTRY_DSN=https://your-public-sentry-dsn@sentry.io/project-id
-   NEXT_PUBLIC_SENTRY_ORG=your-org
-   NEXT_PUBLIC_SENTRY_PROJECT=your-project
+   EMAIL_SERVER_HOST="smtp.example.com"
+   EMAIL_SERVER_PORT="587"
+   EMAIL_SERVER_USER="user@example.com"
+   EMAIL_SERVER_PASSWORD="sample-password"
+   EMAIL_FROM="noreply@example.com"
+   EMAIL_SERVICE="gmail"
 
-   # App Configuration
-   NEXT_PUBLIC_APP_NAME=Your App Name
-   NEXT_PUBLIC_COMPANY_NAME=Your Company
+   STRIPE_WEBHOOK_SECRET="whsec_sample_webhook_secret"
+   STRIPE_SECRET_KEY="sk_test_sample_stripe_key"
+   STRIPE_API_VER="2023-10-16"
+
+   SENTRY_AUTH_TOKEN="sample-sentry-auth-token"
+
+   # Client-side variables (these match the env.production.client file)
+   NEXT_PUBLIC_APP_NAME="Sample App"
+   NEXT_PUBLIC_COMPANY_NAME="Sample Company"
+
+   NEXT_PUBLIC_SENTRY_DSN="https://sample@sentry.io/123"
+   NEXT_PUBLIC_SENTRY_PROJECT="sample-project"
+   NEXT_PUBLIC_SENTRY_ORG="sample-org"
+
+   NEXT_PUBLIC_BETTER_AUTH_URL="http://localhost:3000"
    ```
+
+   > **Note**: These are sample values for development. Replace with actual credentials when deploying to production.
 
 4. Generate and apply database migrations:
 

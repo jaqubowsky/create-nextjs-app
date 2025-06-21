@@ -48,8 +48,8 @@ export const EMAIL_CONFIG = {
 
 export const SENTRY_CONFIG = {
   TRACES_SAMPLE_RATE: {
-    DEVELOPMENT: 1.0,
-    PRODUCTION: 0.1,
+    DEVELOPMENT: 0.2,
+    PRODUCTION: 0.05,
   },
 
   CAPTURE_CONSOLE: false,

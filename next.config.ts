@@ -30,8 +30,17 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
+  // Optimize source map handling to reduce build impact
+  sourcemaps: {
+    // Disable source maps in development to improve build performance
+    disable: process.env.NODE_ENV === "development",
+    // Delete source maps after upload to reduce bundle size
+    deleteSourcemapsAfterUpload: true,
+  },
+
+  // Reduce the scope of file uploads to improve performance
+  // Only enable widenClientFileUpload in production builds
+  widenClientFileUpload: process.env.NODE_ENV === "production",
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
@@ -47,4 +56,10 @@ export default withSentryConfig(nextConfig, {
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
   automaticVercelMonitors: true,
+
+  // Additional performance optimizations
+  reactComponentAnnotation: {
+    // Only enable in production to reduce development build time
+    enabled: process.env.NODE_ENV === "production",
+  },
 });

@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
   const ip = await getIp();
   if (!ip) return NextResponse.next();
 
-  const rateLimitResult = await notFoundRateLimiter.limit(`404:${ip}`);
+  const rateLimitResult = notFoundRateLimiter.limit(`404:${ip}`);
 
   if (!rateLimitResult.success) {
     return new NextResponse(

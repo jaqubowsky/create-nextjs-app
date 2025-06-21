@@ -3,23 +3,32 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { SENTRY_CONFIG } from "./config";
 import { env } from "./lib/env";
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  integrations: [
+    Sentry.replayIntegration({
+      // Only capture replays on errors in production to save bandwidth
+      maskAllText: env.NODE_ENV === "production",
+      blockAllMedia: env.NODE_ENV === "production",
+    }),
+  ],
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  // Use centralized config for consistent sampling rates
+  tracesSampleRate:
+    env.NODE_ENV === "production"
+      ? SENTRY_CONFIG.TRACES_SAMPLE_RATE.PRODUCTION
+      : SENTRY_CONFIG.TRACES_SAMPLE_RATE.DEVELOPMENT,
 
   // Define how likely Replay events are sampled.
-  // This sets the sample rate to be 10%. You may want this to be 100% while
-  // in development and sample at a lower rate in production
-  replaysSessionSampleRate: 0.1,
+  // Lower rates in production to control costs
+  replaysSessionSampleRate: env.NODE_ENV === "production" ? 0.01 : 0.1,
 
-  // Define how likely Replay events are sampled when an error occurs.
+  // Capture replays on all errors
   replaysOnErrorSampleRate: 1.0,
 
   enabled: env.NODE_ENV === "production",

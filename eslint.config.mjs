@@ -48,8 +48,6 @@ export default tseslint.config(
             "src/middleware.ts",
             "src/instrumentation.ts",
             "src/instrumentation-client.ts",
-            "sentry.edge.config.ts",
-            "src/sentry.server.config.ts",
           ],
         },
         {

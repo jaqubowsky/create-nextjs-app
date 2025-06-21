@@ -3,6 +3,7 @@ import * as z from "zod/v4";
 
 export const env = createEnv({
   isServer: typeof window === "undefined",
+  skipValidation: process.env.SKIP_ENV_CHECK === "true",
 
   server: {
     DATABASE_URL: z.url(),

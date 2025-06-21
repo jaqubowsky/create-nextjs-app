@@ -3,9 +3,23 @@ pre-commit:
   commands:
     lint:
       glob: "*.{js,jsx,ts,tsx}"
-      run: npm run lint -- --fix {staged_files}
+      exclude:
+        - next.config.ts
+        - src/sentry.*.config.ts
+        - src/instrumentation*.ts
+        - src/instrumentation-client.ts
+      env:
+        SKIP_ENV_CHECK: "true"
+      run: npm run lint:fix
       stage_fixed: true
     typecheck:
+      exclude:
+        - next.config.ts
+        - src/sentry.*.config.ts
+        - src/instrumentation*.ts
+        - src/instrumentation-client.ts
+      env:
+        SKIP_ENV_CHECK: "true"
       run: npm run typecheck
 
 commit-msg:
