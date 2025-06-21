@@ -12,6 +12,7 @@ import { authRateLimiter } from "@/lib/rate-limit";
 import { publicActionWithLimiter } from "@/lib/safe-action";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidateUserCache } from "./cache";
 import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
@@ -121,5 +122,26 @@ export const resetPasswordAction = publicActionWithLimiter(
     if (!response.ok) {
       throw new ActionError(errors.AUTH.RESET_PASSWORD_FAILED);
     }
+    return { success: true };
+  });
+
+export const refreshUserAction = publicActionWithLimiter(
+  authRateLimiter,
+  "auth"
+)
+  .metadata({ actionName: "refreshUserAction" })
+  .action(async () => {
+    const response = await auth.api.getSession({
+      asResponse: true,
+      headers: await headers(),
+    });
+
+    if (!response.ok) throw new ActionError(errors.AUTH.UNAUTHORIZED);
+
+    const json = await response.json();
+    if (!json.user) throw new ActionError(errors.AUTH.UNAUTHORIZED);
+
+    revalidateUserCache(json.user.id);
+
     return { success: true };
   });

@@ -3,9 +3,16 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   output: "standalone",
-  transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
+  turbopack: {
+    resolveAlias: {
+      "@": "./src",
+    },
+    resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+  },
+  experimental: {
+    useCache: true,
+  },
 };
 
 export default withSentryConfig(nextConfig, {

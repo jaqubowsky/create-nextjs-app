@@ -1,6 +1,8 @@
 import { db } from "@/drizzle/db";
 import { user } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getUserIdTag } from "./cache";
 
 export async function getUserByEmail(email: string) {
   const result = await db
@@ -8,6 +10,16 @@ export async function getUserByEmail(email: string) {
     .from(user)
     .where(eq(user.email, email))
     .limit(1);
+
+  return result[0];
+}
+
+export async function getUserById(id: string) {
+  // example of using cache
+  "use cache";
+  cacheTag(getUserIdTag(id));
+
+  const result = await db.select().from(user).where(eq(user.id, id)).limit(1);
 
   return result[0];
 }
