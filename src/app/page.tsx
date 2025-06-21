@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/card";
 import { SignOutButton } from "@/features/auth/components/logout-button";
 import { RefreshUserButton } from "@/features/auth/components/refresh-user-button";
-import { getUserById } from "@/features/auth/queries";
 import { auth } from "@/lib/auth";
+import { getUserById } from "@/server/user/queries";
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
 

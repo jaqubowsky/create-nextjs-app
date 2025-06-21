@@ -47,48 +47,112 @@ When asked to implement a new feature (e.g., "User Dashboard"):
 1.  **Primary Location**:
     *   Create a new directory for the feature: `src/features/user-dashboard/`.
     *   Place feature-specific React components in `src/features/user-dashboard/components/`.
-    *   Implement backend logic using Next.js Server Actions in `src/features/user-dashboard/actions.ts` (using `next-safe-action`).
+    *   Implement backend logic using Next.js Server Actions in `src/features/user-dashboard/actions.ts`. **Crucially, server actions must not contain inlined database queries or Zod schemas.** They are strictly for orchestrating logic.
     *   Define Zod validation schemas in `src/features/user-dashboard/schemas.ts`. Use these for form validation (with `react-hook-form` and `@next-safe-action`) and server action input validation.
-    *   Create database queries in `src/features/user-dashboard/queries.ts` using Drizzle ORM.
+    *   Create all database queries for the feature in `src/features/user-dashboard/queries.ts` using Drizzle ORM.
     *   Add caching logic in `src/features/user-dashboard/cache.ts` if needed.
 
-2.  **Database Changes (Drizzle ORM)**:
-    *   If the feature requires new tables or modifications to existing ones, update the schema definitions in `src/drizzle/schema.ts`.
-    *   **Always remind the user to run**: `npm run migrate` (which runs both generate and migrate commands).
-    *   For development database exploration, suggest: `npm run studio` to open Drizzle Studio.
+2.  **Caching Strategy**:
+    The project uses Next.js's native caching and revalidation capabilities, organized on a per-feature basis. This ensures that data is fetched efficiently while remaining fresh.
 
-3.  **Authentication & Rate Limiting**:
+    *   **Feature-Specific Cache Utilities (`cache.ts`)**
+
+        Each feature that requires caching should have a `src/features/[featureName]/cache.ts` file. This file is responsible for generating cache tags and creating revalidation functions.
+
+        *Example (`src/features/auth/cache.ts`):*
+        ```typescript
+        import { getGlobalTag, getIdTag } from "@/lib/data-cache";
+        import { revalidateTag } from "next/cache";
+
+        export function getUserGlobalTag() {
+          return getGlobalTag("user");
+        }
+
+        export function getUserIdTag(userId: string) {
+          return getIdTag("user", userId);
+        }
+
+        export function revalidateUserCache(userId: string) {
+          revalidateTag(getUserGlobalTag());
+          revalidateTag(getUserIdTag(userId));
+        }
+        ```
+
+    *   **Caching Database Queries (`queries.ts`)**
+
+        To cache the result of a database query, you must opt-in within the query function itself by adding `"use cache";` as the first line and calling `cacheTag()` with the appropriate tag.
+
+        *Example (`src/features/auth/queries.ts`):*
+        ```typescript
+        import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+        import { getUserIdTag } from "./cache";
+        // ... other imports
+
+        export async function getUserById(id: string) {
+          "use cache";
+          cacheTag(getUserIdTag(id));
+
+          const result = await db.select().from(user).where(eq(user.id, id)).limit(1);
+
+          return result[0];
+        }
+        ```
+
+    *   **Invalidating Caches in Server Actions (`actions.ts`)**
+
+        After any mutation (create, update, delete) that affects cached data, you must invalidate the relevant caches by calling the revalidation function from your feature's `cache.ts` file.
+
+        *Example (`src/features/auth/actions.ts`):*
+        ```typescript
+        import { revalidateUserCache } from "./cache";
+        // ... other imports
+
+        export const refreshUserAction = publicActionWithLimiter(...)
+          .action(async () => {
+            // ... action logic to get user
+            revalidateUserCache(user.id); // Invalidate the cache
+            return { success: true };
+          });
+        ```
+
+3.  **Database Changes (Drizzle ORM)**:
+    *   If the feature requires new tables or modifications to existing ones, update the schema definitions in `src/drizzle/schema.ts`.
+    *   **Always remind the user to run**: `npm run db:migrate` (which runs both generate and migrate commands).
+    *   For development database exploration, suggest: `npm run db:studio` to open Drizzle Studio.
+
+4.  **Authentication & Rate Limiting**:
     *   Use `publicAction`, `authAction`, or `publicActionWithLimiter` from `@/lib/safe-action` for server actions.
     *   Apply appropriate rate limiting using `authRateLimiter` or `publicApiRateLimiter` from `@/lib/rate-limit`.
     *   For protected routes, ensure proper authentication checks using Better Auth.
 
-4.  **Payments Integration**:
+5.  **Payments Integration**:
     *   For payment-related features, use the Stripe client from `@/lib/stripe`.
     *   Create webhook handlers in `src/app/api/stripe/webhook/` following the existing pattern.
     *   Update user records with Stripe customer IDs in the database schema.
 
-5.  **Email Integration**:
+6.  **Email Integration**:
     *   Create email templates in the `/emails` directory using React Email components.
     *   Use the email configuration from `@/lib/env` for SMTP settings.
     *   Send emails through server actions or API routes using Nodemailer.
 
-6.  **Error Handling & Monitoring**:
+7.  **Error Handling & Monitoring**:
+    *   **For server actions, if an error needs to be communicated to the user, you must `throw new ActionError()` with a message from `src/lib/errors.ts`.** For example: `throw new ActionError(errors.AUTH.UNAUTHORIZED);`. This ensures consistent, user-friendly error feedback.
     *   Use proper error handling with custom error types from `@/lib/errors`.
     *   Ensure Sentry captures important errors for monitoring.
     *   Use error boundaries in React components where appropriate.
 
-7.  **Shared Components & Utilities**:
+8.  **Shared Components & Utilities**:
     *   If a new UI component is generic and reusable across multiple features:
         *   Place it in `src/components/ui/` if it's a ShadCN-style primitive or follows that pattern.
         *   Place it in `src/components/` (root) if it's a more complex shared component.
     *   If new utility functions are developed that could be useful across the application, place them in `src/lib/`.
 
-8.  **Routes & Pages (Next.js App Router)**:
+9.  **Routes & Pages (Next.js App Router)**:
     *   Create new pages, layouts, or route handlers for the feature within `src/app/`.
     *   Use proper metadata and SEO optimization for pages.
     *   These app router components will typically import and use components from feature directories and shared components.
 
-9.  **ESLint Module Boundaries**:
+10. **ESLint Module Boundaries**:
     *   **Crucially, all new code must adhere to the module boundary rules defined in `eslint.config.mjs`.**
         *   `shared` (e.g., `src/components/`, `src/lib/`, `src/drizzle/`, `src/server/`) can only import from other `shared` modules.
         *   `feature` (e.g., `src/features/user-dashboard/`) can import from `shared` and from within the *same* feature (`src/features/user-dashboard/`).
@@ -118,6 +182,7 @@ When adding new functionality that requires environment variables:
 
 ## Best Practices
 
+-   **Strive for simplicity.** Avoid over-engineering. Prefer straightforward, readable, and maintainable code over complex solutions.
 -   **Always use TypeScript** with proper type definitions
 -   **Validate all inputs** using Zod schemas
 -   **Apply rate limiting** to public endpoints and actions

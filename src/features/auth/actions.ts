@@ -14,7 +14,7 @@ import { timeout } from "@/lib/timeout";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { revalidateUserCache } from "./cache";
+import { revalidateUserCache } from "../../server/user/cache";
 import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")

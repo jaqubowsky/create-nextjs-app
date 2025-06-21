@@ -1,9 +1,11 @@
 import { AUTH_CONFIG } from "@/config";
 import { db } from "@/drizzle/db";
 import * as schema from "@/drizzle/schema";
+import { getUserById } from "@/server/user/queries";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { customSession } from "better-auth/plugins";
 import { sendResetPasswordEmail, sendVerifyEmailEmail } from "./email-service";
 import { env } from "./env";
 import { hashPassword, verifyPassword } from "./hash";
@@ -59,5 +61,17 @@ export const auth = betterAuth({
       );
     },
   },
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    customSession(async ({ user, session }) => {
+      const cachedUser = await getUserById(session.userId);
+      return {
+        user: {
+          ...user,
+          ...cachedUser,
+        },
+        session,
+      };
+    }),
+  ],
 });
