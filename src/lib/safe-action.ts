@@ -15,7 +15,10 @@ export const action = createSafeActionClient({
 	},
 	handleServerError: (error, utils) => {
 		if (error instanceof ActionError) {
-			if (env.NODE_ENV === "development") console.error(error);
+			if (env.NODE_ENV === "development") {
+				// biome-ignore lint/suspicious/noConsole: <only in development>
+				console.error(error);
+			}
 
 			return error;
 		}

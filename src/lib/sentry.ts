@@ -14,6 +14,7 @@ export function logError({
 	origin: string;
 }): string {
 	if (env.NODE_ENV === "development") {
+		// biome-ignore lint/suspicious/noConsole: <only in development>
 		console.error(error);
 	}
 
@@ -33,6 +34,7 @@ export function logWarning({
 	origin: string;
 }): string {
 	if (env.NODE_ENV === "development") {
+		// biome-ignore lint/suspicious/noConsole: <only in development>
 		console.warn(error);
 	}
 
