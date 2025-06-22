@@ -11,9 +11,8 @@
 		"db:reset": "tsx scripts/reset.ts",
 		"next:build": "npm run lint && npm run typecheck && next build",
 		"typecheck": "tsc --noEmit",
-		"lint": "npx @biomejs/biome lint ./src ./scripts ./drizzle",
-		"lint:fix": "npx @biomejs/biome lint --write ./src ./scripts ./drizzle",
-		"format": "npx @biomejs/biome check --write ./src ./scripts ./drizzle",
+		"lint": "npx @biomejs/biome lint --write ./src ./scripts ./drizzle",
+		"lint:fix": "npx @biomejs/biome check --write ./src ./scripts ./drizzle",
 		"commitlint": "commitlint --edit",
 		"commit": "cz"
 	},
