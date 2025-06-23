@@ -19,7 +19,7 @@ const ASSET_EXTENSIONS = [
 
 const API_PATTERNS = ["/api/"];
 
-const STRIPE_PATTERNS = ["/api/stripe/webhook"];
+const OMIT_PATTERNS = ["/api/stripe/webhook", "/api/auth/"];
 
 const notFoundRateLimiter = new MemoryRateLimiter(5, "10 m");
 
@@ -30,17 +30,12 @@ export async function middleware(request: NextRequest) {
 	const isApiRequest = API_PATTERNS.some((pattern) =>
 		pathname.startsWith(pattern),
 	);
-	const isStripeRequest = STRIPE_PATTERNS.some((pattern) =>
+	const isOmitRequest = OMIT_PATTERNS.some((pattern) =>
 		pathname.startsWith(pattern),
 	);
 
-	if (!isAssetRequest && !isApiRequest) {
-		return NextResponse.next();
-	}
-
-	if (isStripeRequest) {
-		return NextResponse.next();
-	}
+	if (!isAssetRequest && !isApiRequest) return NextResponse.next();
+	if (isOmitRequest) return NextResponse.next();
 
 	const ip = await getIp();
 	if (!ip) return NextResponse.next();

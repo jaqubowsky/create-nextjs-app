@@ -1,19 +1,19 @@
+"use client";
+
 import { MountainsIcon } from "@phosphor-icons/react/ssr";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/features/auth/components/user-menu";
 import { landingConfig } from "@/features/landing/config/landing-content";
-import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import { MobileMenu } from "./mobile-menu";
 import { NavbarLinks } from "./navbar-links";
 
-export async function Navbar() {
+export function Navbar() {
 	const { brand, hero, ui } = landingConfig;
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
+
+	const { data: session, isPending } = authClient.useSession();
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
@@ -37,7 +37,12 @@ export async function Navbar() {
 
 					<div className="hidden md:flex items-center space-x-6">
 						<ModeToggle />
-						{session?.user ? (
+						{isPending ? (
+							<>
+								<div className="h-10 w-16 bg-muted rounded-md animate-pulse" />
+								<div className="h-11 w-24 bg-primary/20 rounded-md animate-pulse" />
+							</>
+						) : session?.user ? (
 							<UserMenu user={session.user} />
 						) : (
 							<>
@@ -55,7 +60,11 @@ export async function Navbar() {
 					</div>
 
 					<div className="md:hidden">
-						<MobileMenu isLoggedIn={!!session?.user} />
+						{isPending ? (
+							<div className="h-10 w-10 bg-muted rounded-md animate-pulse" />
+						) : (
+							<MobileMenu isLoggedIn={!!session?.user} />
+						)}
 					</div>
 				</div>
 			</div>
