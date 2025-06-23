@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { BillingPortalButton } from "@/features/subscriptions/components";
+import { BillingPortalButton } from "@/features/subscriptions/components/billing-portal-button";
 
 export function PremiumCard() {
 	return (

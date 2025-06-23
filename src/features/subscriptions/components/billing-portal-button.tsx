@@ -1,18 +1,19 @@
 "use client";
 
 import { GearIcon, SpinnerGapIcon } from "@phosphor-icons/react";
+import type { VariantProps } from "class-variance-authority";
 import { useAction } from "next-safe-action/hooks";
+import type * as React from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, type buttonVariants } from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { cn } from "@/lib/utils";
 import { openBillingPortalAction } from "../actions";
 
-interface BillingPortalButtonProps {
-	children?: React.ReactNode;
-	className?: string;
-	variant?: "default" | "outline" | "secondary";
-	size?: "default" | "sm" | "lg";
+interface BillingPortalButtonProps
+	extends React.ComponentProps<"button">,
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
 }
 
 export function BillingPortalButton({
@@ -20,6 +21,8 @@ export function BillingPortalButton({
 	className,
 	variant = "outline",
 	size = "default",
+	disabled,
+	...props
 }: BillingPortalButtonProps) {
 	const { execute, isPending } = useAction(openBillingPortalAction, {
 		onSuccess: ({ data }) => {
@@ -40,25 +43,15 @@ export function BillingPortalButton({
 
 	return (
 		<Button
+			{...props}
 			onClick={handleOpenPortal}
-			disabled={isPending}
+			disabled={disabled || isPending}
 			variant={variant}
 			size={size}
-			className={cn(
-				"relative overflow-hidden transition-all duration-200",
-				"hover:shadow-md hover:scale-[1.01] active:scale-[0.99]",
-				"disabled:hover:scale-100 disabled:hover:shadow-none",
-				className,
-			)}
+			className={cn(className)}
 		>
-			<div className="flex items-center gap-2">
-				{isPending ? (
-					<SpinnerGapIcon className="size-4 animate-spin" />
-				) : (
-					<GearIcon className="size-4" />
-				)}
-				<span>{isPending ? "Opening..." : children}</span>
-			</div>
+			{isPending ? <SpinnerGapIcon className="animate-spin" /> : <GearIcon />}
+			{isPending ? "Opening..." : children}
 		</Button>
 	);
 }

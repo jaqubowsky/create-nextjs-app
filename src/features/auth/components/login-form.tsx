@@ -32,7 +32,7 @@ export function LoginForm() {
 
 	const { execute, isPending } = useAction(loginAction, {
 		onSuccess: () => {
-			router.push("/");
+			router.push("/account");
 			router.refresh();
 		},
 		onError: (err) => {

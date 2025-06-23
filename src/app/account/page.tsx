@@ -1,13 +1,11 @@
 import { headers } from "next/headers";
 import { unauthorized } from "next/navigation";
-import { AccountManagementCard } from "@/components/AccountManagementCard";
-import { PremiumCard } from "@/components/PremiumCard";
-import { WelcomeCard } from "@/components/WelcomeCard";
+import { AccountManagementCard } from "@/components/account-management-card";
+import { PremiumCard } from "@/components/premium-card";
+import { WelcomeCard } from "@/components/welcome-card";
 import { SubscriptionPlan } from "@/drizzle/schema";
-import {
-	PaywallCard,
-	SubscriptionSuccessCard,
-} from "@/features/subscriptions/components";
+import { PaywallCard } from "@/features/subscriptions/components/paywall-card";
+import { SubscriptionSuccessCard } from "@/features/subscriptions/components/subscription-success-dialog";
 import { auth } from "@/lib/auth";
 
 export default async function AccountPage() {

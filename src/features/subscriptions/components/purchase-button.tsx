@@ -1,18 +1,19 @@
 "use client";
 
 import { CreditCardIcon, SpinnerGapIcon } from "@phosphor-icons/react";
+import type { VariantProps } from "class-variance-authority";
 import { useAction } from "next-safe-action/hooks";
+import type * as React from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, type buttonVariants } from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { cn } from "@/lib/utils";
 import { createCheckoutSessionAction } from "../actions";
 
-interface PurchaseButtonProps {
-	children?: React.ReactNode;
-	className?: string;
-	variant?: "default" | "outline" | "secondary";
-	size?: "default" | "sm" | "lg";
+interface PurchaseButtonProps
+	extends React.ComponentProps<"button">,
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
 }
 
 export function PurchaseButton({
@@ -20,6 +21,8 @@ export function PurchaseButton({
 	className,
 	variant = "default",
 	size = "default",
+	disabled,
+	...props
 }: PurchaseButtonProps) {
 	const { execute, isPending } = useAction(createCheckoutSessionAction, {
 		onSuccess: ({ data }) => {
@@ -40,27 +43,19 @@ export function PurchaseButton({
 
 	return (
 		<Button
+			{...props}
 			onClick={handlePurchase}
-			disabled={isPending}
+			disabled={disabled || isPending}
 			variant={variant}
 			size={size}
-			className={cn(
-				"relative overflow-hidden transition-all duration-200",
-				"hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]",
-				"disabled:hover:scale-100 disabled:hover:shadow-none",
-				className,
-			)}
+			className={cn(className)}
 		>
-			<div className="flex items-center gap-2">
-				{isPending ? (
-					<SpinnerGapIcon className="size-4 animate-spin" />
-				) : (
-					<CreditCardIcon className="size-4" />
-				)}
-				<span>{isPending ? "Processing..." : children}</span>
-			</div>
-
-			<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full transition-transform duration-700 group-hover:translate-x-full" />
+			{isPending ? (
+				<SpinnerGapIcon className="animate-spin" />
+			) : (
+				<CreditCardIcon />
+			)}
+			{isPending ? "Processing..." : children}
 		</Button>
 	);
 }

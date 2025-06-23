@@ -33,7 +33,7 @@ export const createCheckoutSessionAction = privateAction
 
 		const checkoutSession = await stripe.checkout.sessions.create({
 			success_url: absoluteUrl("?session_id={CHECKOUT_SESSION_ID}"),
-			cancel_url: absoluteUrl("/"),
+			cancel_url: absoluteUrl("/account"),
 			payment_method_types: ["card"],
 			customer: customerId,
 			mode: "subscription",
@@ -85,7 +85,7 @@ export const openBillingPortalAction = privateAction
 
 		const billingPortalSession = await stripe.billingPortal.sessions.create({
 			customer: session.user.stripeCustomerId as string,
-			return_url: absoluteUrl(""),
+			return_url: absoluteUrl("/account"),
 		});
 
 		return { url: billingPortalSession.url };

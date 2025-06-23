@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { PurchaseButton } from "./PurchaseButton";
+import { PurchaseButton } from "./purchase-button";
 
 export function PaywallCard() {
 	return (
