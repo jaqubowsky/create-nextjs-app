@@ -86,7 +86,7 @@ A comprehensive template for scaffolding modern NextJS applications with authent
 4. Generate and apply database migrations:
 
    ```bash
-   npm run migrate
+   npm run db:migrate
    ```
 
 5. Start the development server with Turbopack:
@@ -99,11 +99,20 @@ A comprehensive template for scaffolding modern NextJS applications with authent
 
 ## Available Scripts
 
-- `npm run dev` - Start development server with Turbopack
+- `npm run dev` - Start development server with Turbopack and database studio
+- `npm run next:dev` - Start Next.js development server with Turbopack only
 - `npm run build` - Build the application for production
-- `npm run migrate` - Generate and apply database migrations
-- `npm run studio` - Open Drizzle Studio for database management
-- `npm run lint` - Run ESLint
+- `npm run start` - Start the production server
+- `npm run typecheck` - Run TypeScript type checking
+- `npm run lint` - Run Biome linter
+- `npm run lint:fix` - Run Biome linter with comprehensive fixes
+- `npm run db:generate` - Generate Drizzle migration files
+- `npm run db:migrate` - Generate and apply database migrations
+- `npm run db:migrate:prod` - Run production database migrations
+- `npm run db:studio` - Open Drizzle Studio for database management
+- `npm run db:reset` - Reset database (WARNING: deletes all data)
+- `npm run commit` - Interactive commit with Commitizen
+- `npm run commitlint` - Lint commit messages
 
 ## Project Structure
 

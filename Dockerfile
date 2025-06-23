@@ -1,5 +1,5 @@
 # Base image with Node.js
-FROM alpine:3.19 AS base
+FROM alpine:3.22 AS base
 
 # Install Node.js and essential dependencies
 RUN apk add --no-cache nodejs npm libc6-compat
@@ -27,14 +27,11 @@ COPY env.production.client .env.production
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Run Drizzle code generation
-RUN npm run db:generate
-
 # Build the Next.js app
 RUN npm run build
 
 # Final stage: minimal runner
-FROM alpine:3.19 AS runner
+FROM alpine:3.22 AS runner
 
 # Install only Node.js
 RUN apk add --no-cache nodejs
@@ -52,9 +49,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Copy built app and static files
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copy Drizzle migration artifacts if needed
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 
 # Use non-root user
 USER nextjs

@@ -172,14 +172,6 @@ When adding new functionality that requires environment variables:
     *   Add examples to README.md environment variables section
     *   Update `env.production.client` if adding public variables
 
-## Development Workflow
-
-1.  **Start Development**: `npm run dev` (uses Turbopack)
-2.  **Database Changes**: `npm run migrate` (generate + apply migrations)
-3.  **Database Studio**: `npm run studio` (open Drizzle Studio)
-4.  **Linting**: `npm run lint` (ESLint with boundaries)
-5.  **Build**: `npm run build` (includes migration generation)
-
 ## Best Practices
 
 -   **Strive for simplicity.** Avoid over-engineering. Prefer straightforward, readable, and maintainable code over complex solutions.
