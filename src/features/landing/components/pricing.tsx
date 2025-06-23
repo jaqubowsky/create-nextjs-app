@@ -119,15 +119,7 @@ export function Pricing() {
 				</div>
 
 				<div className="mt-16 text-center">
-					<p className="text-muted-foreground text-base">
-						{pricing.footer}{" "}
-						<a
-							href="/features"
-							className="text-primary hover:text-primary/80 font-medium transition-colors"
-						>
-							{ui.learnMoreFeatures}
-						</a>
-					</p>
+					<p className="text-muted-foreground text-base">{pricing.footer}</p>
 				</div>
 			</div>
 		</section>

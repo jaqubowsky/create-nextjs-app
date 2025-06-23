@@ -287,7 +287,7 @@ export const landingConfig = {
 			},
 		],
 		footer:
-			"All plans include 14-day free trial, no setup fees, and cancel anytime. Enterprise plans available with custom pricing.",
+			"All plans include 14-day free trial, no setup fees, and cancel anytime.",
 	},
 
 	// Comparison Section
