@@ -1,64 +1,62 @@
-# Start with a minimal Alpine Linux
+# Base image with Node.js
 FROM alpine:3.19 AS base
 
-# Install Node.js and only essential dependencies
+# Install Node.js and essential dependencies
 RUN apk add --no-cache nodejs npm libc6-compat
 
-# Install dependencies only when needed
+# Install dependencies
 FROM base AS deps
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Copy dependency files
 COPY package.json package-lock.json* ./
-
-# Install ALL dependencies (including dev dependencies) since we need them for building
 RUN npm ci
 
-# Build stage for compiling the application
+# Build stage
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies
+# Copy deps and app source
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Copy client-side environment configuration
-# This contains ONLY public variables that are safe to commit to repository
+# Copy client-side env config
 COPY env.production.client .env.production
 
-# Set NODE_ENV for the build process
-# This will be available to both server and client code via T3 Env
+# Set build environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Generate Prisma client and build the application
-RUN npx drizzle-kit generate && npm run build
+# Run Drizzle code generation
+RUN npm run db:generate
 
-# Final production stage with absolute minimal footprint
+# Build the Next.js app
+RUN npm run build
+
+# Final stage: minimal runner
 FROM alpine:3.19 AS runner
 
-# Install only Node.js runtime - no npm needed for running
+# Install only Node.js
 RUN apk add --no-cache nodejs
 
-# Create a non-root user
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 WORKDIR /app
 
-# Set production environment
+# Set environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy the standalone Next.js build
+# Copy built app and static files
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy only what's needed from Prisma
-COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
-COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+# Copy Drizzle migration artifacts if needed
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 
-# Use the non-root user
+# Use non-root user
 USER nextjs
 
 EXPOSE 3000

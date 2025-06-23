@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import { AUTH_CONFIG } from "@/config";
 
 export async function hashPassword(password: string): Promise<string> {
