@@ -9,6 +9,7 @@ import {
 	registerSchema,
 	resetPasswordWithTokenSchema,
 } from "@/features/auth/schemas";
+import { absoluteUrl } from "@/lib/absolute-url";
 import { auth } from "@/lib/auth";
 import { ActionError, errors } from "@/lib/errors";
 import { authRateLimiter } from "@/lib/rate-limit";
@@ -43,6 +44,8 @@ export const googleLoginAction = publicActionWithLimiter(
 		const response = await auth.api.signInSocial({
 			body: {
 				provider: "google",
+				errorCallbackURL: absoluteUrl("/auth/sign-in"),
+				callbackURL: absoluteUrl("/account"),
 			},
 			asResponse: true,
 			headers: await headers(),
