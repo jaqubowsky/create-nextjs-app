@@ -10,6 +10,8 @@ import { revalidateUserCache } from "@/server/user/cache";
 import { updateUserStripeCustomerId } from "./queries";
 import { checkoutSuccessSchema } from "./schemas";
 
+const TRIAL_PERIOD_DAYS = 14;
+
 export const createCheckoutSessionAction = privateAction
 	.metadata({
 		actionName: "createCheckoutSessionAction",
@@ -32,7 +34,7 @@ export const createCheckoutSessionAction = privateAction
 		}
 
 		const checkoutSession = await stripe.checkout.sessions.create({
-			success_url: absoluteUrl("?session_id={CHECKOUT_SESSION_ID}"),
+			success_url: absoluteUrl("/account?session_id={CHECKOUT_SESSION_ID}"),
 			cancel_url: absoluteUrl("/account"),
 			payment_method_types: ["card"],
 			customer: customerId,
@@ -43,6 +45,15 @@ export const createCheckoutSessionAction = privateAction
 			customer_update: {
 				address: "auto",
 			},
+			subscription_data: {
+				trial_period_days: TRIAL_PERIOD_DAYS,
+				trial_settings: {
+					end_behavior: {
+						missing_payment_method: "pause",
+					},
+				},
+			},
+			payment_method_collection: "if_required",
 			line_items: [
 				{
 					price: env.STRIPE_PRICE_ID,

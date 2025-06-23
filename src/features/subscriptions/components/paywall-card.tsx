@@ -49,7 +49,7 @@ export function PaywallCard() {
 
 				<div className="flex justify-center">
 					<PurchaseButton size="lg" className="w-full max-w-xs">
-						Upgrade to Pro
+						Get your 14 days free trial
 					</PurchaseButton>
 				</div>
 			</CardContent>
