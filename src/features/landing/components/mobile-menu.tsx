@@ -14,24 +14,28 @@ import { landingConfig } from "../config/landing-content";
 
 export function MobileMenu() {
 	const [isOpen, setIsOpen] = useState(false);
-	const { brand, navigation, hero } = landingConfig;
+	const { brand, navigation, hero, ui } = landingConfig;
+
+	const handleLinkClick = () => {
+		setIsOpen(false);
+	};
 
 	return (
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>
 			<SheetTrigger asChild>
 				<Button variant="ghost" size="sm" className="p-3">
 					<ListIcon className="h-6 w-6" />
-					<span className="sr-only">Open menu</span>
+					<span className="sr-only">{ui.openMenu}</span>
 				</Button>
 			</SheetTrigger>
-			<SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+			<SheetTitle className="sr-only">{ui.navigationMenu}</SheetTitle>
 			<SheetContent side="right" className="w-full sm:w-80 bg-card p-6">
 				<div className="flex flex-col h-full">
 					<div className="flex items-center justify-between pb-8 border-b border-border">
 						<Link
 							className="flex items-center space-x-3"
 							href="/"
-							onClick={() => setIsOpen(false)}
+							onClick={handleLinkClick}
 						>
 							<div className="bg-primary/10 p-2 rounded-lg">
 								<MountainsIcon className="h-8 w-8 text-primary" />
@@ -45,15 +49,14 @@ export function MobileMenu() {
 					<nav className="flex-1 py-8">
 						<div className="space-y-6">
 							{navigation.map((item) => (
-								<Button
+								<Link
 									key={item.name}
-									variant="ghost"
-									asChild
-									className="w-full justify-start text-xl font-semibold py-3 px-2 h-auto"
-									onClick={() => setIsOpen(false)}
+									href={item.href}
+									onClick={handleLinkClick}
+									className="block w-full text-left text-xl font-semibold py-3 px-2 rounded-md text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 								>
-									<Link href={item.href}>{item.name}</Link>
-								</Button>
+									{item.name}
+								</Link>
 							))}
 						</div>
 					</nav>
@@ -63,15 +66,12 @@ export function MobileMenu() {
 							variant="ghost"
 							asChild
 							className="w-full text-base font-semibold"
-							onClick={() => setIsOpen(false)}
 						>
-							<Link href="/auth/signin">Sign In</Link>
+							<Link href="/auth/sign-in" onClick={handleLinkClick}>
+								{ui.signIn}
+							</Link>
 						</Button>
-						<Button
-							size="lg"
-							className="w-full"
-							onClick={() => setIsOpen(false)}
-						>
+						<Button size="lg" className="w-full" onClick={handleLinkClick}>
 							{hero.cta.primary}
 						</Button>
 					</div>

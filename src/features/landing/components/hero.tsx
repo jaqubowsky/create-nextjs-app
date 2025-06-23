@@ -6,7 +6,7 @@ export function Hero() {
 	const { hero } = landingConfig;
 
 	return (
-		<section className="relative overflow-hidden bg-background">
+		<section id={hero.id} className="relative overflow-hidden bg-background">
 			<div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
 			<div className="container mx-auto px-6 py-24 sm:py-32 lg:py-40 max-w-7xl">
 				<div className="grid gap-16 lg:grid-cols-2 lg:gap-20 items-center">
@@ -72,7 +72,7 @@ export function Hero() {
 												<div className="w-4 h-4 rounded bg-primary" />
 											</div>
 											<span className="font-semibold text-foreground">
-												Dashboard
+												{hero.dashboard.title}
 											</span>
 										</div>
 										<div className="flex space-x-1">
@@ -83,20 +83,19 @@ export function Hero() {
 									</div>
 
 									<div className="grid grid-cols-2 gap-4">
-										<div className="bg-background rounded-lg p-4 border border-border">
-											<div className="text-2xl font-bold text-primary">
-												99.9%
+										{hero.dashboard.metrics.map((metric) => (
+											<div
+												key={metric.label}
+												className="bg-background rounded-lg p-4 border border-border"
+											>
+												<div className="text-2xl font-bold text-primary">
+													{metric.value}
+												</div>
+												<div className="text-sm text-muted-foreground">
+													{metric.label}
+												</div>
 											</div>
-											<div className="text-sm text-muted-foreground">
-												Uptime
-											</div>
-										</div>
-										<div className="bg-background rounded-lg p-4 border border-border">
-											<div className="text-2xl font-bold text-primary">
-												10K+
-											</div>
-											<div className="text-sm text-muted-foreground">Users</div>
-										</div>
+										))}
 									</div>
 
 									<div className="bg-background rounded-lg p-4 border border-border">
@@ -127,7 +126,7 @@ export function Hero() {
 											></div>
 										</div>
 										<div className="text-sm text-muted-foreground mt-2">
-											Performance Overview
+											{hero.dashboard.chart.label}
 										</div>
 									</div>
 
@@ -138,10 +137,10 @@ export function Hero() {
 											</div>
 											<div>
 												<p className="text-sm font-semibold text-foreground">
-													All Systems Operational
+													{hero.dashboard.status.title}
 												</p>
 												<p className="text-xs text-muted-foreground">
-													Last updated: Just now
+													{hero.dashboard.status.subtitle}
 												</p>
 											</div>
 										</div>

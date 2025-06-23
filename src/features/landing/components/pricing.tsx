@@ -1,4 +1,5 @@
 import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -11,10 +12,10 @@ import {
 import { landingConfig } from "../config/landing-content";
 
 export function Pricing() {
-	const { pricing } = landingConfig;
+	const { pricing, ui } = landingConfig;
 
 	return (
-		<section className="py-24 sm:py-32 bg-background">
+		<section id={pricing.id} className="py-24 sm:py-32 bg-background">
 			<div className="container mx-auto px-6 max-w-7xl">
 				<div className="text-center space-y-6 mb-24">
 					<div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
@@ -82,7 +83,7 @@ export function Pricing() {
 								{tier.limitations.length > 0 && (
 									<div className="pt-6 border-t border-border/50">
 										<p className="text-sm text-muted-foreground mb-3 font-medium">
-											Limitations:
+											{ui.limitations}
 										</p>
 										{tier.limitations.map((limitation) => (
 											<div
@@ -105,11 +106,12 @@ export function Pricing() {
 								<Button
 									variant={tier.isFeatured ? "default" : "outline"}
 									size="lg"
+									asChild
 									className={`w-full py-6 text-base font-semibold transition-all duration-300 ${
 										tier.isFeatured ? "shadow-lg hover:shadow-xl" : "border-2"
 									}`}
 								>
-									{tier.ctaText}
+									<Link href="/auth/sign-in">{tier.ctaText}</Link>
 								</Button>
 							</CardFooter>
 						</Card>
@@ -123,7 +125,7 @@ export function Pricing() {
 							href="/features"
 							className="text-primary hover:text-primary/80 font-medium transition-colors"
 						>
-							Learn more about our features
+							{ui.learnMoreFeatures}
 						</a>
 					</p>
 				</div>

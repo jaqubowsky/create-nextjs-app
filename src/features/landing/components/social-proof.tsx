@@ -4,7 +4,7 @@ export function SocialProof() {
 	const { socialProof } = landingConfig;
 
 	return (
-		<section className="py-16 sm:py-24">
+		<section id={socialProof.id} className="py-16 sm:py-24">
 			<div className="container mx-auto px-4">
 				<div className="text-center space-y-12">
 					<div className="space-y-4">

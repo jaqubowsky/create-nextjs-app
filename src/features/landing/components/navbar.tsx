@@ -5,7 +5,7 @@ import { landingConfig } from "../config/landing-content";
 import { MobileMenu } from "./mobile-menu";
 
 export function Navbar() {
-	const { brand, navigation, hero } = landingConfig;
+	const { brand, navigation, hero, ui } = landingConfig;
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
@@ -40,7 +40,7 @@ export function Navbar() {
 
 					<div className="hidden md:flex items-center space-x-6">
 						<Button variant="ghost" asChild>
-							<Link href="/auth/signin">Sign In</Link>
+							<Link href="/auth/sign-in">{ui.signIn}</Link>
 						</Button>
 						<Button
 							size="lg"

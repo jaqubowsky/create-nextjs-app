@@ -4,6 +4,7 @@ import {
 	LinkIcon,
 	RocketLaunchIcon,
 } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { landingConfig } from "../config/landing-content";
@@ -15,10 +16,10 @@ const iconMap = {
 };
 
 export function HowItWorks() {
-	const { howItWorks } = landingConfig;
+	const { howItWorks, ui } = landingConfig;
 
 	return (
-		<section className="py-24 sm:py-32 bg-muted/30">
+		<section id={howItWorks.id} className="py-24 sm:py-32 bg-muted/30">
 			<div className="container mx-auto px-6 max-w-7xl">
 				<div className="text-center space-y-6 mb-24">
 					<div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
@@ -77,9 +78,10 @@ export function HowItWorks() {
 
 										<Button
 											variant="link"
+											asChild
 											className="inline-flex items-center text-primary font-medium text-sm hover:text-primary/80 transition-colors group-hover:gap-2 gap-1 mt-4"
 										>
-											Get started
+											<Link href="/auth/sign-in">{ui.getStarted}</Link>
 										</Button>
 									</CardContent>
 								</Card>

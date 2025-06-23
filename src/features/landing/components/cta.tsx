@@ -1,4 +1,5 @@
 import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { landingConfig } from "../config/landing-content";
 
@@ -6,7 +7,10 @@ export function CTA() {
 	const { cta } = landingConfig;
 
 	return (
-		<section className="relative py-24 sm:py-32 overflow-hidden bg-background">
+		<section
+			id={cta.id}
+			className="relative py-24 sm:py-32 overflow-hidden bg-background"
+		>
 			<div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-background"></div>
 
 			<div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
@@ -43,16 +47,18 @@ export function CTA() {
 					<div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
 						<Button
 							size="lg"
+							asChild
 							className="text-lg px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300"
 						>
-							{cta.buttons.primary}
+							<Link href="/auth/sign-in">{cta.buttons.primary}</Link>
 						</Button>
 						<Button
 							variant="outline"
 							size="lg"
+							asChild
 							className="text-lg px-10 py-6 border-2 transition-all duration-300"
 						>
-							{cta.buttons.secondary}
+							<Link href="/auth/sign-in">{cta.buttons.secondary}</Link>
 						</Button>
 					</div>
 

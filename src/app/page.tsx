@@ -1,5 +1,27 @@
-import { LandingPage } from "@/features/landing/components/landing-page";
+import { Benefits } from "@/features/landing/components/benefits";
+import { Comparison } from "@/features/landing/components/comparison";
+import { CTA } from "@/features/landing/components/cta";
+import { FAQ } from "@/features/landing/components/faq";
+import { Footer } from "@/features/landing/components/footer";
+import { Hero } from "@/features/landing/components/hero";
+import { HowItWorks } from "@/features/landing/components/how-it-works";
+import { Navbar } from "@/features/landing/components/navbar";
+import { Pricing } from "@/features/landing/components/pricing";
+import { SocialProof } from "@/features/landing/components/social-proof";
 
 export default function Home() {
-	return <LandingPage />;
+	return (
+		<div className="min-h-screen">
+			<Navbar />
+			<Hero />
+			<SocialProof />
+			<Comparison />
+			<Benefits />
+			<HowItWorks />
+			<Pricing />
+			<FAQ />
+			<CTA />
+			<Footer />
+		</div>
+	);
 }

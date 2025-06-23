@@ -160,6 +160,14 @@ body {
 	body {
 		@apply bg-background text-foreground;
 	}
+
+	html {
+		@apply scroll-smooth;
+	}
+
+	section[id] {
+		@apply scroll-mt-20;
+	}
 }
 
 @layer utilities {

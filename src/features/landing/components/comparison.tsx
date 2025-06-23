@@ -6,7 +6,7 @@ export function Comparison() {
 	const { comparison } = landingConfig;
 
 	return (
-		<section className="py-24 sm:py-32 bg-muted/20">
+		<section id={comparison.id} className="py-24 sm:py-32 bg-muted/20">
 			<div className="container mx-auto px-6 max-w-7xl">
 				<div className="text-center space-y-6 mb-24">
 					<div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">

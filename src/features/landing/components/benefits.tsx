@@ -1,12 +1,13 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { landingConfig } from "../config/landing-content";
 
 export function Benefits() {
-	const { benefits } = landingConfig;
+	const { benefits, ui } = landingConfig;
 
 	return (
-		<section className="py-24 sm:py-32 bg-background">
+		<section id={benefits.id} className="py-24 sm:py-32 bg-background">
 			<div className="container mx-auto px-6 max-w-7xl">
 				<div className="text-center space-y-6 mb-24">
 					<div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
@@ -52,9 +53,10 @@ export function Benefits() {
 
 								<Button
 									variant="link"
+									asChild
 									className="inline-flex items-center text-primary font-medium text-sm hover:text-primary/80 transition-colors group-hover:gap-2 gap-1 mt-4"
 								>
-									Learn more
+									<Link href="/auth/sign-in">{ui.learnMore}</Link>
 								</Button>
 							</CardContent>
 						</Card>
