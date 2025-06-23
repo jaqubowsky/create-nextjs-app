@@ -2,27 +2,33 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
-    schedule: { interval: "weekly", day: "sunday", time: "00:00", timezone: "Europe/Warsaw" }
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Warsaw"
     labels: ["dependencies"]
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     allow:
       - dependency-type: "direct"
-        update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+      - dependency-type: "indirect"
     groups:
-      prod:
-        patterns: ["next", "react", "drizzle", "stripe"]
+      all:
+        patterns: ["*"]
         update-types: ["minor", "patch"]
-      dev:
-        patterns: ["@types/*", "*test*"]
-    security-updates: true
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    schedule: { interval: "weekly" }
+    schedule:
+      interval: "weekly"
+      day: "monday"
     labels: ["dependencies"]
     open-pull-requests-limit: 5
 
   - package-ecosystem: "docker"
     directory: "/"
-    schedule: { interval: "weekly" }
+    schedule:
+      interval: "weekly"
+      day: "monday"
     labels: ["dependencies"]
+    open-pull-requests-limit: 5
