@@ -33,6 +33,6 @@ jobs:
 
       - if: ${{ github.actor == 'dependabot[bot]' && success() }}
         name: Auto-approve minor/patch dependency updates
-        uses: hmarr/auto-approve-action@v3
+        uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
