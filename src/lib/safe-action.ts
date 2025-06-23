@@ -75,3 +75,22 @@ export const publicActionWithLimiter = (
 
 		return next();
 	});
+
+export const privateActionWithLimiter = (
+	limiter: RateLimiter,
+	customIdentifier?: string,
+) =>
+	action.use(async ({ next }) => {
+		const session = await auth.api.getSession({ headers: await headers() });
+		if (!session) throw new ActionError(errors.AUTH.UNAUTHORIZED);
+
+		const ip = await getIp();
+		if (!ip) throw new ActionError(errors.GENERAL.RATE_LIMIT);
+
+		const identifier = customIdentifier ? `${customIdentifier}:${ip}` : ip;
+
+		const { success } = limiter.limit(identifier);
+		if (!success) throw new ActionError(errors.GENERAL.RATE_LIMIT);
+
+		return next({ ctx: { session } });
+	});

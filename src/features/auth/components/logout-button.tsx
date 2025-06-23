@@ -1,12 +1,10 @@
 "use client";
 
 import { SignOutIcon, SpinnerGapIcon } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useAction } from "next-safe-action/hooks";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { setSentryUserContext } from "@/lib/sentry";
 import { cn } from "@/lib/utils";
+import { signOutAction } from "../actions";
 
 export function SignOutButton({
 	children = "Sign Out",
@@ -15,37 +13,20 @@ export function SignOutButton({
 	children?: React.ReactNode;
 	className?: string;
 }) {
-	const router = useRouter();
-	const [isPending, setIsPending] = useState(false);
-
-	const handleSignOut = async () => {
-		setIsPending(true);
-		try {
-			await authClient.signOut({
-				fetchOptions: {
-					onSuccess: () => {
-						setSentryUserContext(null);
-						router.push("/auth/sign-in");
-					},
-				},
-			});
-		} finally {
-			setIsPending(false);
-		}
-	};
+	const { execute: handleSignOut, isExecuting } = useAction(signOutAction);
 
 	return (
 		<Button
-			onClick={() => void handleSignOut()}
+			onClick={() => handleSignOut()}
 			className={cn(className)}
-			disabled={isPending}
+			disabled={isExecuting}
 		>
-			{isPending ? (
+			{isExecuting ? (
 				<SpinnerGapIcon className="animate-spin" />
 			) : (
 				<SignOutIcon />
 			)}
-			{isPending ? "Signing out..." : children}
+			{isExecuting ? "Signing out..." : children}
 		</Button>
 	);
 }

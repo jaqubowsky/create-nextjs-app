@@ -13,8 +13,13 @@ import { absoluteUrl } from "@/lib/absolute-url";
 import { auth } from "@/lib/auth";
 import { ActionError, errors } from "@/lib/errors";
 import { authRateLimiter } from "@/lib/rate-limit";
-import { publicActionWithLimiter } from "@/lib/safe-action";
+import {
+	privateActionWithLimiter,
+	publicActionWithLimiter,
+} from "@/lib/safe-action";
+import { setSentryUserContext } from "@/lib/sentry";
 import { timeout } from "@/lib/timeout";
+import { revalidateUserCache } from "@/server/user/cache";
 import { getUserByEmail } from "./queries";
 
 export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
@@ -33,6 +38,21 @@ export const loginAction = publicActionWithLimiter(authRateLimiter, "auth")
 		if (!response.ok) throw new ActionError(errors.AUTH.AUTHENTICATION_FAILED);
 
 		return { success: true };
+	});
+
+export const signOutAction = privateActionWithLimiter(authRateLimiter, "auth")
+	.metadata({ actionName: "signOutAction" })
+	.action(async ({ ctx: { session } }) => {
+		const response = await auth.api.signOut({
+			headers: await headers(),
+			asResponse: true,
+		});
+
+		if (!response.ok) throw new ActionError(errors.AUTH.SIGN_OUT_FAILED);
+
+		revalidateUserCache(session?.user.id);
+		setSentryUserContext(null);
+		redirect("/auth/sign-in");
 	});
 
 export const googleLoginAction = publicActionWithLimiter(

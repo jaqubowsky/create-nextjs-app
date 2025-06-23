@@ -5,14 +5,12 @@ import { FAQ } from "@/features/landing/components/faq";
 import { Footer } from "@/features/landing/components/footer";
 import { Hero } from "@/features/landing/components/hero";
 import { HowItWorks } from "@/features/landing/components/how-it-works";
-import { Navbar } from "@/features/landing/components/navbar";
 import { Pricing } from "@/features/landing/components/pricing";
 import { SocialProof } from "@/features/landing/components/social-proof";
 
 export default function Home() {
 	return (
 		<div className="min-h-screen">
-			<Navbar />
 			<Hero />
 			<SocialProof />
 			<Comparison />

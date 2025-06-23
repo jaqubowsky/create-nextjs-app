@@ -1,12 +1,19 @@
 import { MountainsIcon } from "@phosphor-icons/react/ssr";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { landingConfig } from "../config/landing-content";
+import { UserMenu } from "@/features/auth/components/user-menu";
+import { landingConfig } from "@/features/landing/config/landing-content";
+import { auth } from "@/lib/auth";
 import { MobileMenu } from "./mobile-menu";
+import { NavbarLinks } from "./navbar-links";
 
-export function Navbar() {
-	const { brand, navigation, hero, ui } = landingConfig;
+export async function Navbar() {
+	const { brand, hero, ui } = landingConfig;
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
@@ -26,34 +33,29 @@ export function Navbar() {
 						</Link>
 					</div>
 
-					<nav className="hidden md:flex items-center space-x-10">
-						{navigation.map((item) => (
-							<Link
-								key={item.name}
-								href={item.href}
-								className="relative text-base font-semibold text-muted-foreground transition-colors hover:text-primary group"
-							>
-								{item.name}
-								<span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-							</Link>
-						))}
-					</nav>
+					<NavbarLinks />
 
 					<div className="hidden md:flex items-center space-x-6">
 						<ModeToggle />
-						<Button variant="ghost" asChild>
-							<Link href="/auth/sign-in">{ui.signIn}</Link>
-						</Button>
-						<Button
-							size="lg"
-							className="px-8 shadow-lg hover:shadow-xl transition-all duration-300"
-						>
-							{hero.cta.primary}
-						</Button>
+						{session?.user ? (
+							<UserMenu user={session.user} />
+						) : (
+							<>
+								<Button variant="ghost" asChild>
+									<Link href="/auth/sign-in">{ui.signIn}</Link>
+								</Button>
+								<Button
+									size="lg"
+									className="px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+								>
+									{hero.cta.primary}
+								</Button>
+							</>
+						)}
 					</div>
 
 					<div className="md:hidden">
-						<MobileMenu />
+						<MobileMenu isLoggedIn={!!session?.user} />
 					</div>
 				</div>
 			</div>

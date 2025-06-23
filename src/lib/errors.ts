@@ -1,6 +1,7 @@
 export const errors = {
 	AUTH: {
 		UNAUTHORIZED: "Unauthorized. Please log in to continue.",
+		SIGN_OUT_FAILED: "Failed to sign out. Please try again.",
 		EMAIL_IN_USE: "Email already in use.",
 		AUTHENTICATION_FAILED: "Authentication failed. Please try again.",
 		REGISTRATION_FAILED: "Registration failed. Please try again.",

@@ -17,7 +17,7 @@ export default async function AccountPage() {
 	const isPaidUser = session.user.plan === SubscriptionPlan.PAID;
 
 	return (
-		<div className="w-screen h-screen p-4 flex items-center justify-center">
+		<div className="flex-1 p-4 flex items-center justify-center">
 			<div className="w-full max-w-2xl space-y-6">
 				<WelcomeCard
 					userEmail={session.user.email}

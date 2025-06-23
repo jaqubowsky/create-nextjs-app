@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -27,7 +28,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
+				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background flex flex-col min-h-screen`}
 			>
 				<ThemeProvider
 					attribute="class"
@@ -36,7 +37,8 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<Toaster position="top-center" richColors />
-					{children}
+					<Navbar />
+					<main className="flex-1 flex flex-col">{children}</main>
 				</ThemeProvider>
 			</body>
 		</html>

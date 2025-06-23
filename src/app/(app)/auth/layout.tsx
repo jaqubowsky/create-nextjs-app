@@ -20,8 +20,6 @@ export default async function AuthLayout({
 	if (session) return redirect("/account");
 
 	return (
-		<div className="w-screen h-screen flex items-center justify-center">
-			{children}
-		</div>
+		<div className="flex-1 flex items-center justify-center">{children}</div>
 	);
 }

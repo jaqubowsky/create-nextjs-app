@@ -2,6 +2,7 @@
 
 import { ListIcon, MountainsIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,13 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import { landingConfig } from "../config/landing-content";
+import { SignOutButton } from "@/features/auth/components/logout-button";
+import { landingConfig } from "@/features/landing/config/landing-content";
 
-export function MobileMenu() {
+export function MobileMenu({ isLoggedIn }: { isLoggedIn: boolean }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const { brand, navigation, hero, ui } = landingConfig;
+	const pathname = usePathname();
 
 	const handleLinkClick = () => {
 		setIsOpen(false);
@@ -50,32 +53,46 @@ export function MobileMenu() {
 
 					<nav className="flex-1 py-8">
 						<div className="space-y-6">
-							{navigation.map((item) => (
-								<Link
-									key={item.name}
-									href={item.href}
-									onClick={handleLinkClick}
-									className="block w-full text-left text-xl font-semibold py-3 px-2 rounded-md text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-								>
-									{item.name}
-								</Link>
-							))}
+							{pathname === "/" &&
+								navigation.map((item: { name: string; href: string }) => (
+									<Link
+										key={item.name}
+										href={item.href}
+										onClick={handleLinkClick}
+										className="block w-full text-left text-xl font-semibold py-3 px-2 rounded-md text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+									>
+										{item.name}
+									</Link>
+								))}
 						</div>
 					</nav>
 
 					<div className="space-y-4 pt-6 border-t border-border">
-						<Button
-							variant="ghost"
-							asChild
-							className="w-full text-base font-semibold"
-						>
-							<Link href="/auth/sign-in" onClick={handleLinkClick}>
-								{ui.signIn}
-							</Link>
-						</Button>
-						<Button size="lg" className="w-full" onClick={handleLinkClick}>
-							{hero.cta.primary}
-						</Button>
+						{isLoggedIn ? (
+							<>
+								<Button asChild className="w-full">
+									<Link href="/account" onClick={handleLinkClick}>
+										Dashboard
+									</Link>
+								</Button>
+								<SignOutButton className="w-full" />
+							</>
+						) : (
+							<>
+								<Button
+									variant="ghost"
+									asChild
+									className="w-full text-base font-semibold"
+								>
+									<Link href="/auth/sign-in" onClick={handleLinkClick}>
+										{ui.signIn}
+									</Link>
+								</Button>
+								<Button size="lg" className="w-full" onClick={handleLinkClick}>
+									{hero.cta.primary}
+								</Button>
+							</>
+						)}
 					</div>
 				</div>
 			</SheetContent>
