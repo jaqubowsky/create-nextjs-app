@@ -3,6 +3,7 @@
 import { ListIcon, MountainsIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 import { useState } from "react";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
 	Sheet,
@@ -44,6 +45,7 @@ export function MobileMenu() {
 								{brand.name}
 							</span>
 						</Link>
+						<ModeToggle />
 					</div>
 
 					<nav className="flex-1 py-8">

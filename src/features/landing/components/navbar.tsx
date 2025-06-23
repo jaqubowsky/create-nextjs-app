@@ -1,5 +1,6 @@
 import { MountainsIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { landingConfig } from "../config/landing-content";
 import { MobileMenu } from "./mobile-menu";
@@ -39,6 +40,7 @@ export function Navbar() {
 					</nav>
 
 					<div className="hidden md:flex items-center space-x-6">
+						<ModeToggle />
 						<Button variant="ghost" asChild>
 							<Link href="/auth/sign-in">{ui.signIn}</Link>
 						</Button>
