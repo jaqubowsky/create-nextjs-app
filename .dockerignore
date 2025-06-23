@@ -32,7 +32,6 @@ logs
 
 # Cache directories
 .npm
-.eslintcache
 .stylelintcache
 .cache
 .yarn/cache

@@ -152,8 +152,8 @@ When asked to implement a new feature (e.g., "User Dashboard"):
     *   Use proper metadata and SEO optimization for pages.
     *   These app router components will typically import and use components from feature directories and shared components.
 
-10. **ESLint Module Boundaries**:
-    *   **Crucially, all new code must adhere to the module boundary rules defined in `eslint.config.mjs`.**
+10. **Module Boundaries**:
+    *   **Crucially, all new code must adhere to the module boundary rules.**
         *   `shared` (e.g., `src/components/`, `src/lib/`, `src/drizzle/`, `src/server/`) can only import from other `shared` modules.
         *   `feature` (e.g., `src/features/user-dashboard/`) can import from `shared` and from within the *same* feature (`src/features/user-dashboard/`).
         *   `app` (e.g., `src/app/dashboard/`) can import from `shared` and `feature` modules.
@@ -181,7 +181,7 @@ When adding new functionality that requires environment variables:
 -   **Handle errors gracefully** with proper user feedback
 -   **Use server actions** over API routes when possible
 -   **Follow the feature-based architecture** strictly
--   **Respect ESLint boundaries** to maintain modularity
+-   **Respect boundaries** to maintain modularity
 -   **Use proper caching strategies** for database queries
 -   **Implement proper SEO** with Next.js metadata API
 -   **Test integrations** (Stripe webhooks, email sending, etc.)

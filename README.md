@@ -14,7 +14,7 @@ A comprehensive template for scaffolding modern NextJS applications with authent
 - **Rate Limiting**: Memory-based rate limiting
 - **Monitoring**: Sentry for error tracking and performance monitoring
 - **Deployment**: Docker support with multi-stage builds
-- **Development**: TypeScript, ESLint with boundaries, Lefthook for git hooks
+- **Development**: TypeScript, Biome, Lefthook for git hooks
 
 ## Getting Started
 
@@ -186,14 +186,6 @@ docker build -t nextjs-template-app .
 # Run the container
 docker run -p 3000:3000 nextjs-template-app
 ```
-
-## ESLint Configuration
-
-The project uses ESLint with boundaries plugin to enforce architectural boundaries:
-
-- Shared components and utilities can only import from other shared modules
-- Feature modules can import from shared modules or within the same feature
-- App pages can import from shared modules or feature modules
 
 ## Environment Variables
 
