@@ -7,7 +7,6 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Europe/Warsaw"
-    labels: ["dependencies"]
     open-pull-requests-limit: 10
     allow:
       - dependency-type: "direct"
@@ -21,7 +20,6 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels: ["dependencies"]
     open-pull-requests-limit: 5
 
   - package-ecosystem: "docker"
@@ -29,5 +27,4 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    labels: ["dependencies"]
     open-pull-requests-limit: 5
