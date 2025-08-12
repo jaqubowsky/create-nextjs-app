@@ -111,6 +111,7 @@ This template includes automated release management using Release Please. To ena
    - Generate new token (classic) with these scopes: `repo` (full repository access)
    - Add it as a repository secret named `RELEASE_PLEASE_TOKEN`
    - Update `.github/workflows/release-please.yml` to use `${{ secrets.RELEASE_PLEASE_TOKEN }}`
+   - Add `repo-url: your-username/your-repo-name` parameter to the workflow action
 
 3. **How Release Please Works**:
    - Write commits using conventional commit format (e.g., `feat: add new feature`, `fix: resolve bug`)
