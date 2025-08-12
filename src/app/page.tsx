@@ -9,17 +9,17 @@ import { Pricing } from "@/features/landing/components/pricing";
 import { SocialProof } from "@/features/landing/components/social-proof";
 
 export default function Home() {
-	return (
-		<div className="min-h-screen">
-			<Hero />
-			<SocialProof />
-			<Comparison />
-			<Benefits />
-			<HowItWorks />
-			<Pricing />
-			<FAQ />
-			<CTA />
-			<Footer />
-		</div>
-	);
+  return (
+    <div className="min-h-screen">
+      <Hero />
+      <SocialProof />
+      <Comparison />
+      <Benefits />
+      <HowItWorks />
+      <Pricing />
+      <FAQ />
+      <CTA />
+      <Footer />
+    </div>
+  );
 }

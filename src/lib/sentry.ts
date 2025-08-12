@@ -1,47 +1,45 @@
 import * as Sentry from "@sentry/nextjs";
-import type { User } from "@/drizzle/schema";
+import type { User } from "better-auth";
 import { env } from "./env";
 
 export function setSentryUserContext(user: Partial<User> | null) {
-	Sentry.setUser(user);
+  Sentry.setUser(user);
 }
 
 export function logError({
-	error,
-	origin,
+  error,
+  origin,
 }: {
-	error: unknown;
-	origin: string;
+  error: unknown;
+  origin: string;
 }): string {
-	if (env.NODE_ENV === "development") {
-		// biome-ignore lint/suspicious/noConsole: <only in development>
-		console.error(error);
-	}
+  if (env.NODE_ENV === "development") {
+    console.error(error);
+  }
 
-	return Sentry.captureException(error, {
-		level: "error",
-		tags: {
-			origin,
-		},
-	});
+  return Sentry.captureException(error, {
+    level: "error",
+    tags: {
+      origin,
+    },
+  });
 }
 
 export function logWarning({
-	error,
-	origin,
+  error,
+  origin,
 }: {
-	error: unknown;
-	origin: string;
+  error: unknown;
+  origin: string;
 }): string {
-	if (env.NODE_ENV === "development") {
-		// biome-ignore lint/suspicious/noConsole: <only in development>
-		console.warn(error);
-	}
+  if (env.NODE_ENV === "development") {
+    console.warn(error);
+  }
 
-	return Sentry.captureException(error, {
-		level: "warning",
-		tags: {
-			origin,
-		},
-	});
+  return Sentry.captureException(error, {
+    level: "warning",
+    tags: {
+      origin,
+    },
+  });
 }

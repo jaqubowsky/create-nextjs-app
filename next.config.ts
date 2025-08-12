@@ -1,6 +1,6 @@
-import { env } from "@/lib/env";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+import { env } from "@/lib/env";
 
 const nextConfig: NextConfig = {
   output: "standalone",

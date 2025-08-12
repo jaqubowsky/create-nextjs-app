@@ -6,22 +6,22 @@ import { cn } from "@/lib/utils";
 import { googleLoginAction } from "../actions";
 
 export const GoogleLoginButton = ({
-	children,
-	className,
+  children,
+  className,
 }: {
-	children: React.ReactNode;
-	className?: string;
+  children: React.ReactNode;
+  className?: string;
 }) => {
-	const { execute, isPending } = useAction(googleLoginAction);
+  const { execute, isPending } = useAction(googleLoginAction);
 
-	return (
-		<Button
-			variant={"outline"}
-			disabled={isPending}
-			onClick={() => execute()}
-			className={cn(className)}
-		>
-			{children}
-		</Button>
-	);
+  return (
+    <Button
+      variant={"outline"}
+      disabled={isPending}
+      onClick={() => execute()}
+      className={cn(className)}
+    >
+      {children}
+    </Button>
+  );
 };

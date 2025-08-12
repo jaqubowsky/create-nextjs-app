@@ -7,26 +7,26 @@ import { cn } from "@/lib/utils";
 import { signOutAction } from "../actions";
 
 export function SignOutButton({
-	children = "Sign Out",
-	className,
+  children = "Sign Out",
+  className,
 }: {
-	children?: React.ReactNode;
-	className?: string;
+  children?: React.ReactNode;
+  className?: string;
 }) {
-	const { execute: handleSignOut, isExecuting } = useAction(signOutAction);
+  const { execute: handleSignOut, isExecuting } = useAction(signOutAction);
 
-	return (
-		<Button
-			onClick={() => handleSignOut()}
-			className={cn(className)}
-			disabled={isExecuting}
-		>
-			{isExecuting ? (
-				<SpinnerGapIcon className="animate-spin" />
-			) : (
-				<SignOutIcon />
-			)}
-			{isExecuting ? "Signing out..." : children}
-		</Button>
-	);
+  return (
+    <Button
+      onClick={() => handleSignOut()}
+      className={cn(className)}
+      disabled={isExecuting}
+    >
+      {isExecuting ? (
+        <SpinnerGapIcon className="animate-spin" />
+      ) : (
+        <SignOutIcon />
+      )}
+      {isExecuting ? "Signing out..." : children}
+    </Button>
+  );
 }

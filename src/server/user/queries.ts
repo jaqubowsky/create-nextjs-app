@@ -1,15 +1,23 @@
 import { eq } from "drizzle-orm";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { unstable_cacheTag as cacheTag } from "next/cache";
 import { db } from "@/drizzle/db";
 import { user } from "@/drizzle/schema";
+import { DatabaseError, errors } from "@/lib/errors";
+import { logError } from "@/lib/sentry";
 import { getUserIdTag } from "./cache";
 
 export async function getUserById(id: string) {
-	// example of using cache
-	"use cache";
-	cacheTag(getUserIdTag(id));
+  "use cache";
+  cacheTag(getUserIdTag(id));
 
-	const result = await db.select().from(user).where(eq(user.id, id)).limit(1);
+  try {
+    const result = await db.query.user.findFirst({
+      where: eq(user.id, id),
+    });
 
-	return result[0];
+    return result;
+  } catch (error) {
+    logError({ error, origin: "getUserById" });
+    throw new DatabaseError(errors.DATABASE.FETCH_USER_FAILED);
+  }
 }
