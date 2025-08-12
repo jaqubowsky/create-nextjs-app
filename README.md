@@ -97,6 +97,27 @@ A comprehensive template for scaffolding modern NextJS applications with authent
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Setting Up Release Automation (Optional)
+
+This template includes automated release management using Release Please. To enable it:
+
+1. **Enable GitHub Actions Permissions**:
+   - Go to your repository Settings → Actions → General → Workflow permissions
+   - Select "Read and write permissions"
+   - Check "Allow GitHub Actions to create and approve pull requests"
+
+2. **Create a Personal Access Token** (if you encounter permission errors):
+   - Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Generate new token (classic) with these scopes: `repo` (full repository access)
+   - Add it as a repository secret named `RELEASE_PLEASE_TOKEN`
+   - Update `.github/workflows/release-please.yml` to use `${{ secrets.RELEASE_PLEASE_TOKEN }}`
+
+3. **How Release Please Works**:
+   - Write commits using conventional commit format (e.g., `feat: add new feature`, `fix: resolve bug`)
+   - Push to master branch
+   - Release Please automatically creates a "Release PR" with updated CHANGELOG.md and version bump
+   - When you merge the Release PR, it creates a GitHub release and git tag
+
 ## Available Scripts
 
 - `npm run dev` - Start development server with Turbopack and database studio
