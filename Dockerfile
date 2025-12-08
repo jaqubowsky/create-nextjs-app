@@ -1,5 +1,5 @@
 # Base image with Node.js
-FROM alpine:3.22 AS base
+FROM alpine:3.23 AS base
 
 # Install Node.js and essential dependencies
 RUN apk add --no-cache nodejs npm libc6-compat
@@ -31,7 +31,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # Final stage: minimal runner
-FROM alpine:3.22 AS runner
+FROM alpine:3.23 AS runner
 
 # Install only Node.js
 RUN apk add --no-cache nodejs
